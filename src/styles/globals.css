@@ -34,6 +34,8 @@
 /* ---------- ベース ---------- */
 
 html {
+  /* 紙色×計測器のコントラストが設計の核。強制ダークモードの反転を抑止する */
+  color-scheme: only light;
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-body);

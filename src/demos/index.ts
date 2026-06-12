@@ -3,4 +3,7 @@
 
 import type { DemoDef } from "./types";
 
-export const demoLoaders: Record<string, () => Promise<{ default: DemoDef }>> = {};
+export const demoLoaders: Record<string, () => Promise<{ default: DemoDef }>> = {
+  "fourier-partial-sum": () => import("./ch01/fourier-partial-sum"),
+  "harmonics-stack": () => import("./ch01/harmonics-stack"),
+};

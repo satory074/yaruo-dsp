@@ -8,4 +8,7 @@ export interface DemoMeta {
   height?: number;
 }
 
-export const demoMeta: Record<string, DemoMeta> = {};
+export const demoMeta: Record<string, DemoMeta> = {
+  "fourier-partial-sum": { title: "FOURIER SERIES — PARTIAL SUM", chapter: 1 },
+  "harmonics-stack": { title: "HARMONICS — STACK & SUM", chapter: 1, height: 360 },
+};
