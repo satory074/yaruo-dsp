@@ -1,0 +1,33 @@
+{
+  "name": "yaruo-dsp",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "typecheck": "astro check",
+    "test": "tsx scripts/smoketest.ts && tsx scripts/domtest.ts",
+    "test:dist": "tsx scripts/disttest.ts"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/mdx": "^4.3.14",
+    "@tailwindcss/vite": "^4.0.0",
+    "astro": "^5.18.2",
+    "katex": "^0.17.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.0"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^28.0.3",
+    "@types/node": "^25.9.0",
+    "jsdom": "^29.1.1",
+    "tsx": "^4.19.2"
+  }
+}

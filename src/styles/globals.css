@@ -1,0 +1,540 @@
+@import "tailwindcss";
+
+/* ============================================================
+   やる夫で学ぶディジタル信号処理 — デザインシステム
+   コンセプト: 「和紙の教科書 × 計測器」
+   - 地は温かい紙色、長文の対話を読むための設え
+   - デモはオシロスコープ風ダークパネル + 蛍光トレースで対比
+   ============================================================ */
+
+@theme {
+  --color-paper: #faf6ec;
+  --color-paper-deep: #f3ecdc;
+  --color-ink: #2b2722;
+  --color-ink-soft: #5a5247;
+  --color-rule: #d9cfba;
+  --color-vermilion: #c94e2c; /* 朱 — 見出し・強調 */
+  --color-indigo: #2c4a6e; /* 藍 — リンク・やらない夫 */
+  --color-yaruo: #fdf3cf; /* やる夫の吹き出し地 */
+  --color-yaruo-edge: #e4c96b;
+  --color-yaranaio: #e8edf2; /* やらない夫の吹き出し地 */
+  --color-yaranaio-edge: #9fb3c8;
+  --color-scope: #141d1a; /* 計測器パネル */
+  --color-scope-edge: #2c3b35;
+  --color-trace-green: #54e0a2; /* 蛍光トレース */
+  --color-trace-amber: #ffb454;
+  --color-trace-cyan: #5ec8e5;
+  --color-trace-pink: #ff7d9c;
+
+  --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-body: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --font-mono: "IBM Plex Mono", "Menlo", "Consolas", monospace;
+}
+
+/* ---------- ベース ---------- */
+
+html {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  line-height: 1.9;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* 紙の質感: ごく薄いノイズ */
+body {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.025 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-vermilion) 25%, transparent);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+a {
+  color: var(--color-indigo);
+  text-decoration-color: color-mix(in srgb, var(--color-indigo) 40%, transparent);
+  text-underline-offset: 3px;
+}
+a:hover {
+  color: var(--color-vermilion);
+  text-decoration-color: currentColor;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-paper-deep);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+/* ---------- 章本文の組版 ---------- */
+
+.prose-dsp h2 {
+  font-size: 1.5rem;
+  color: var(--color-ink);
+  margin-top: 3.5rem;
+  margin-bottom: 1.2rem;
+  padding-left: 0.75rem;
+  border-left: 4px solid var(--color-vermilion);
+}
+
+.prose-dsp h3 {
+  font-size: 1.2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose-dsp > p {
+  margin: 1.1rem 0;
+}
+
+.prose-dsp hr {
+  border: none;
+  border-top: 1px dashed var(--color-rule);
+  margin: 2.5rem 0;
+}
+
+/* 数式ブロック: 横スクロール許容（モバイル必須） */
+.prose-dsp .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.4rem 0.2rem;
+  margin: 1.2rem 0;
+}
+.katex {
+  font-size: 1.06em;
+}
+
+/* ---------- 吹き出し（対話UI） ---------- */
+
+.speech {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1.6rem 0;
+  grid-template-columns: 56px minmax(0, 1fr);
+}
+.speech--yaranaio {
+  grid-template-columns: minmax(0, 1fr) 56px;
+}
+.speech--yaranaio .speech-avatar {
+  order: 2;
+}
+
+.speech-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding-top: 0.2rem;
+}
+.speech-avatar .speech-name {
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  color: var(--color-ink-soft);
+  white-space: nowrap;
+}
+
+.speech-bubble {
+  position: relative;
+  border-radius: 14px;
+  padding: 0.85rem 1.15rem;
+  border: 1.5px solid;
+  min-width: 0; /* grid 内での overflow 対策 */
+}
+.speech-bubble > :first-child { margin-top: 0; }
+.speech-bubble > :last-child { margin-bottom: 0; }
+.speech-bubble p { margin: 0.7rem 0; }
+.speech-bubble .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.3rem 0.1rem;
+  margin: 0.9rem 0;
+}
+
+.speech--yaruo .speech-bubble {
+  background: var(--color-yaruo);
+  border-color: var(--color-yaruo-edge);
+  border-top-left-radius: 4px;
+}
+.speech--yaruo .speech-bubble::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: -9px;
+  border-style: solid;
+  border-width: 5px 9px 5px 0;
+  border-color: transparent var(--color-yaruo-edge) transparent transparent;
+}
+
+.speech--yaranaio .speech-bubble {
+  background: var(--color-yaranaio);
+  border-color: var(--color-yaranaio-edge);
+  border-top-right-radius: 4px;
+}
+.speech--yaranaio .speech-bubble::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  right: -9px;
+  border-style: solid;
+  border-width: 5px 0 5px 9px;
+  border-color: transparent transparent transparent var(--color-yaranaio-edge);
+}
+
+@media (max-width: 480px) {
+  .speech { grid-template-columns: 44px minmax(0, 1fr); }
+  .speech--yaranaio { grid-template-columns: minmax(0, 1fr) 44px; }
+  .speech-avatar svg { width: 40px; height: 40px; }
+}
+
+/* ---------- デモパネル（計測器） ---------- */
+
+.demo {
+  margin: 2.2rem 0;
+  border-radius: 12px;
+  background: var(--color-scope);
+  border: 1px solid var(--color-scope-edge);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 12px 28px -16px rgba(34, 28, 18, 0.55);
+  overflow: hidden;
+}
+
+.demo-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--color-scope-edge);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--color-trace-green);
+}
+.demo-titlebar::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-trace-green);
+  box-shadow: 0 0 6px var(--color-trace-green);
+  flex: none;
+}
+.demo-titlebar .demo-badge {
+  margin-left: auto;
+  color: #5d6f67;
+  font-size: 0.66rem;
+}
+
+.demo canvas {
+  display: block;
+  width: 100%;
+  touch-action: none;
+}
+
+.demo-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  padding: 0.75rem 0.95rem;
+  border-top: 1px solid var(--color-scope-edge);
+  background: color-mix(in srgb, var(--color-scope) 70%, black);
+}
+
+.demo-control {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #aebbb3;
+  min-width: 0;
+}
+.demo-control label {
+  white-space: nowrap;
+}
+.demo-control output {
+  color: var(--color-trace-amber);
+  min-width: 5.5ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.demo-control select,
+.demo-control button {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  background: #0d1412;
+  color: #d4ded8;
+  border: 1px solid var(--color-scope-edge);
+  border-radius: 6px;
+  padding: 0.25rem 0.55rem;
+}
+.demo-control button {
+  cursor: pointer;
+}
+.demo-control button:hover {
+  border-color: var(--color-trace-green);
+  color: var(--color-trace-green);
+}
+
+.demo-control input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 130px;
+  height: 4px;
+  border-radius: 2px;
+  background: #36453f;
+  outline-offset: 4px;
+}
+.demo-control input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-trace-green);
+  border: 2px solid #0d1412;
+  box-shadow: 0 0 6px color-mix(in srgb, var(--color-trace-green) 60%, transparent);
+  cursor: ew-resize;
+}
+.demo-control input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-trace-green);
+  border: 2px solid #0d1412;
+  cursor: ew-resize;
+}
+
+.demo-caption {
+  font-size: 0.82rem;
+  color: var(--color-ink-soft);
+  margin: 0.6rem 0.2rem 0;
+  line-height: 1.7;
+}
+.demo-caption::before {
+  content: "▶ ";
+  color: var(--color-vermilion);
+  font-size: 0.7em;
+}
+
+/* figure 全体（パネル+キャプション）を包む */
+.demo-figure {
+  margin: 2.2rem 0;
+}
+.demo-figure .demo {
+  margin: 0;
+}
+
+/* ---------- 補足ボックス ---------- */
+
+.note-box {
+  margin: 1.8rem 0;
+  border: 1px dashed var(--color-rule);
+  border-radius: 10px;
+  background: var(--color-paper-deep);
+  padding: 1rem 1.2rem;
+  font-size: 0.92em;
+}
+.note-box .note-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-indigo);
+  margin-bottom: 0.4rem;
+}
+.note-box .note-title::before {
+  content: "✎ ";
+}
+.note-box > :nth-child(2) { margin-top: 0; }
+.note-box > :last-child { margin-bottom: 0; }
+
+.keypoint {
+  margin: 2.6rem 0 1.4rem;
+  border: 2px solid var(--color-vermilion);
+  border-radius: 12px;
+  padding: 1.1rem 1.3rem;
+  background: color-mix(in srgb, var(--color-vermilion) 4%, var(--color-paper));
+}
+.keypoint .keypoint-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--color-vermilion);
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.06em;
+}
+.keypoint ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+.keypoint li {
+  padding-left: 1.4em;
+  position: relative;
+}
+.keypoint li::before {
+  content: "▣";
+  position: absolute;
+  left: 0;
+  color: var(--color-vermilion);
+}
+
+/* ---------- 章カード（目次） ---------- */
+
+.chapter-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  border: 1.5px solid var(--color-rule);
+  border-radius: 12px;
+  background: #fffdf6;
+  padding: 1rem 1.2rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+}
+.chapter-card:hover {
+  color: inherit;
+  border-color: var(--color-vermilion);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -14px rgba(34, 28, 18, 0.4);
+}
+.chapter-card .chapter-no {
+  font-family: var(--font-mono);
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--color-vermilion);
+  line-height: 1;
+  min-width: 2.2ch;
+  text-align: right;
+}
+.chapter-card .chapter-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.chapter-card .chapter-summary {
+  font-size: 0.82rem;
+  color: var(--color-ink-soft);
+  line-height: 1.65;
+  margin-top: 0.3rem;
+}
+.chapter-card .chapter-meta {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-ink-soft);
+}
+.chapter-card .chapter-meta .demo-count {
+  color: #1d8a5f;
+}
+.chapter-card.is-read::after {
+  content: "✓ 読了";
+  position: absolute;
+  top: 0.7rem;
+  right: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: #1d8a5f;
+}
+
+/* ---------- ナビゲーション ---------- */
+
+.chapter-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+  margin-top: 3.5rem;
+  padding-top: 1.8rem;
+  border-top: 1px dashed var(--color-rule);
+}
+.chapter-nav a {
+  border: 1.5px solid var(--color-rule);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  background: #fffdf6;
+  min-width: 0;
+}
+.chapter-nav a:hover {
+  border-color: var(--color-vermilion);
+}
+.chapter-nav .nav-dir {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--color-ink-soft);
+  letter-spacing: 0.08em;
+}
+.chapter-nav .nav-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-top: 0.2rem;
+  color: var(--color-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chapter-nav a:hover .nav-title {
+  color: var(--color-vermilion);
+}
+.chapter-nav .nav-next {
+  text-align: right;
+  grid-column: 2;
+}
+
+/* ---------- ヘッダ・フッタ ---------- */
+
+.site-header {
+  border-bottom: 1px solid var(--color-rule);
+  background: color-mix(in srgb, var(--color-paper) 88%, white);
+}
+.site-header-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0.7rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.site-header .site-mark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.98rem;
+  text-decoration: none;
+  color: var(--color-ink);
+  letter-spacing: 0.03em;
+}
+.site-header .site-mark:hover { color: var(--color-vermilion); }
+.site-header nav {
+  margin-left: auto;
+  font-size: 0.82rem;
+}
+
+.site-footer {
+  margin-top: 5rem;
+  border-top: 1px solid var(--color-rule);
+  padding: 2rem 1.2rem 3rem;
+  font-size: 0.78rem;
+  color: var(--color-ink-soft);
+  line-height: 1.8;
+}
+.site-footer-inner {
+  max-width: 780px;
+  margin: 0 auto;
+}
