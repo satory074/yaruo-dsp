@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"chapters">;
+}
+
+const { entry } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const { chapterLabel, title, summary, demos } = entry.data;
+// 「第1章」→「1」、「付録A」→「A」、「前置き」→「序」
+const no = chapterLabel.match(/第(\d+)章/)?.[1] ?? chapterLabel.match(/付録(\w)/)?.[1] ?? "序";
+---
+
+<a class="chapter-card" href={`${base}/${entry.id}/`} data-slug={entry.id}>
+  <span class="chapter-no">{no}</span>
+  <span>
+    <span class="chapter-title">{title}</span>
+    <p class="chapter-summary">{summary}</p>
+    <span class="chapter-meta">
+      <span>{chapterLabel}</span>
+      {demos.length > 0 && <span class="demo-count">⚡ デモ {demos.length} 件</span>}
+    </span>
+  </span>
+</a>

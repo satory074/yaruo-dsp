@@ -1,0 +1,147 @@
+---
+// オリジナル描き起こしの簡易ベクターキャラクター（AAの転載はしない）。
+// やる夫 = おにぎり型・クリーム色、やらない夫 = 黒スーツ・角顔。
+export type Mood = "normal" | "smile" | "surprised" | "cry" | "angry" | "smug" | "think";
+
+interface Props {
+  character: "yaruo" | "yaranaio";
+  mood?: Mood;
+  size?: number;
+}
+
+const { character, mood = "normal", size = 52 } = Astro.props;
+---
+
+{
+  character === "yaruo" ? (
+    <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
+      {/* おにぎり型の輪郭 */}
+      <path
+        d="M32 5 C 24 5, 9 38, 9 48 C 9 56 19 59 32 59 C 45 59 55 56 55 48 C 55 38 40 5 32 5 Z"
+        fill="#f9f0d0"
+        stroke="#c9b56b"
+        stroke-width="2.5"
+      />
+      {mood === "normal" && (
+        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <path d="M18 36 q 5 -5 10 0" />
+          <path d="M36 36 q 5 -5 10 0" />
+          <path d="M28 47 h 8" />
+        </g>
+      )}
+      {mood === "smile" && (
+        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <path d="M18 36 q 5 -5 10 0" />
+          <path d="M36 36 q 5 -5 10 0" />
+          <path d="M25 45 q 7 6 14 0" />
+        </g>
+      )}
+      {mood === "surprised" && (
+        <g>
+          <circle cx="23" cy="35" r="4.2" fill="none" stroke="#3a342c" stroke-width="2.4" />
+          <circle cx="41" cy="35" r="4.2" fill="none" stroke="#3a342c" stroke-width="2.4" />
+          <ellipse cx="32" cy="48" rx="4" ry="5" fill="#3a342c" />
+        </g>
+      )}
+      {mood === "cry" && (
+        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <path d="M18 34 q 5 5 10 0" />
+          <path d="M36 34 q 5 5 10 0" />
+          <path d="M25 48 q 3.5 -3 7 0 q 3.5 3 7 0" />
+          <path d="M20 40 q -1.5 5 0 8" stroke="#58a8d8" stroke-width="3" />
+        </g>
+      )}
+      {mood === "angry" && (
+        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <path d="M18 32 l 10 4" />
+          <path d="M46 32 l -10 4" />
+          <path d="M25 49 q 7 -5 14 0" />
+        </g>
+      )}
+      {mood === "smug" && (
+        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <path d="M18 36 h 10" />
+          <path d="M36 36 h 10" />
+          <path d="M27 46 q 6 4 11 -1" />
+        </g>
+      )}
+      {mood === "think" && (
+        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <path d="M18 36 q 5 -5 10 0" />
+          <path d="M36 36 q 5 -5 10 0" />
+          <path d="M28 47 h 8" />
+          <g fill="#8a8273" stroke="none">
+            <circle cx="50" cy="18" r="1.6" />
+            <circle cx="55" cy="14" r="2" />
+            <circle cx="60" cy="9" r="2.4" />
+          </g>
+        </g>
+      )}
+    </svg>
+  ) : (
+    <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
+      {/* 黒スーツの肩 */}
+      <path d="M8 64 C 10 50 22 46 32 46 C 42 46 54 50 56 64 Z" fill="#23252a" />
+      <path d="M27 47 L 32 56 L 37 47 Z" fill="#f5f2ea" />
+      {/* 角ばった顔 */}
+      <rect x="19" y="6" width="26" height="38" rx="7" fill="#f3e2c8" stroke="#b09a76" stroke-width="2.2" />
+      {/* 髪 */}
+      <path d="M19 18 C 19 8 26 5 32 5 C 38 5 45 8 45 18 L 45 14 C 45 9 39 6.5 32 6.5 C 25 6.5 19 9 19 14 Z" fill="#36302a" />
+      <path d="M19 17 C 20 9 26 6 32 6 C 38 6 44 9 45 17 C 41 13 37 12 32 12 C 27 12 23 13 19 17 Z" fill="#36302a" />
+      {mood === "normal" && (
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
+          <path d="M24 27 h 7" />
+          <path d="M33 27 h 7" />
+          <path d="M29 37 h 6" />
+        </g>
+      )}
+      {mood === "smile" && (
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
+          <path d="M24 28 q 3.5 -3.5 7 0" />
+          <path d="M33 28 q 3.5 -3.5 7 0" />
+          <path d="M27 36 q 5 4 10 0" />
+        </g>
+      )}
+      {mood === "surprised" && (
+        <g>
+          <circle cx="27" cy="27" r="3.4" fill="none" stroke="#33302a" stroke-width="2.2" />
+          <circle cx="37" cy="27" r="3.4" fill="none" stroke="#33302a" stroke-width="2.2" />
+          <ellipse cx="32" cy="37" rx="3.2" ry="4" fill="#33302a" />
+        </g>
+      )}
+      {mood === "cry" && (
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
+          <path d="M24 26 q 3.5 3.5 7 0" />
+          <path d="M33 26 q 3.5 3.5 7 0" />
+          <path d="M28 38 q 4 -2.5 8 0" />
+        </g>
+      )}
+      {mood === "angry" && (
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
+          <path d="M24 25 l 7 3" />
+          <path d="M40 25 l -7 3" />
+          <path d="M28 38 q 4 -3 8 0" />
+        </g>
+      )}
+      {mood === "smug" && (
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
+          <path d="M24 27 h 7" />
+          <path d="M33 27 h 7" />
+          <path d="M28 36 q 5 3.5 9 -0.5" />
+        </g>
+      )}
+      {mood === "think" && (
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
+          <path d="M24 27 h 7" />
+          <path d="M33 27 h 7" />
+          <path d="M29 37 h 6" />
+          <g fill="#8a8273" stroke="none">
+            <circle cx="50" cy="14" r="1.6" />
+            <circle cx="55" cy="10" r="2" />
+            <circle cx="60" cy="6" r="2.4" />
+          </g>
+        </g>
+      )}
+    </svg>
+  )
+}

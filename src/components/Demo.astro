@@ -1,0 +1,31 @@
+---
+import { demoMeta } from "../demos/manifest";
+
+interface Props {
+  id: string;
+  caption?: string;
+}
+
+const { id, caption } = Astro.props;
+const meta = demoMeta[id];
+if (!meta) {
+  throw new Error(`Demo.astro: unknown demo id "${id}" — src/demos/manifest.ts に登録してください`);
+}
+---
+
+<figure class="demo-figure">
+  <div class="demo" data-demo={id}>
+    <div class="demo-titlebar">
+      {meta.title}
+      <span class="demo-badge">INTERACTIVE</span>
+    </div>
+    <canvas style={`height:${meta.height ?? 300}px`}></canvas>
+    <div class="demo-controls"></div>
+    <noscript>
+      <p style="padding: 0.8rem 1rem; color: #93a89d; font-size: 0.8rem;">
+        このデモの操作には JavaScript が必要です。
+      </p>
+    </noscript>
+  </div>
+  {caption && <figcaption class="demo-caption">{caption}</figcaption>}
+</figure>

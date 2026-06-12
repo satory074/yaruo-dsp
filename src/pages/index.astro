@@ -1,15 +1,69 @@
 ---
-import "../styles/globals.css";
+import { getCollection } from "astro:content";
+import Layout from "../components/Layout.astro";
+import ChapterCard from "../components/ChapterCard.astro";
+import Avatar from "../components/dialog/Avatar.astro";
+
+const chapters = (await getCollection("chapters")).sort((a, b) => a.data.order - b.data.order);
+const main = chapters.filter((c) => c.data.order < 90);
+const appendix = chapters.filter((c) => c.data.order >= 90);
+const demoTotal = chapters.reduce((acc, c) => acc + c.data.demos.length, 0);
 ---
 
-<!doctype html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <title>やる夫で学ぶディジタル信号処理</title>
-  </head>
-  <body>
-    <h1>やる夫で学ぶディジタル信号処理</h1>
-    <p>準備中（B1で目次ページに置き換え）</p>
-  </body>
-</html>
+<Layout
+  title="やる夫で学ぶディジタル信号処理"
+  description="フーリエ級数からディジタルフィルタ設計まで、やる夫とやらない夫の対話とインタラクティブなデモで学ぶディジタル信号処理の入門教材。"
+>
+  <section class="mb-14 mt-4">
+    <div class="flex items-end gap-4">
+      <div class="flex -space-x-1">
+        <Avatar character="yaruo" mood="smile" size={64} />
+        <Avatar character="yaranaio" mood="normal" size={64} />
+      </div>
+      <p class="font-mono text-xs tracking-[0.2em] text-(--color-ink-soft) pb-2">
+        DIGITAL SIGNAL PROCESSING<br />WITH YARUO
+      </p>
+    </div>
+    <h1 class="mt-4 text-4xl leading-snug">
+      やる夫で学ぶ<br />
+      <span class="text-(--color-vermilion)">ディジタル信号処理</span>
+    </h1>
+    <p class="mt-5 max-w-[36rem] text-[0.95rem] leading-8">
+      フーリエ級数からディジタルフィルタの設計まで。
+      数式を恐れるやる夫と、容赦なく数式を出してくるやらない夫の対話に、
+      スライダーで動かせる{demoTotal}個のインタラクティブデモを添えて、
+      「式が何をしているのか」を目で確かめながら進む信号処理の入門教材。
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-5 border-l-4 border-(--color-vermilion) pl-3 text-xl">目次</h2>
+    <div class="grid gap-3">
+      {main.map((entry) => <ChapterCard entry={entry} />)}
+    </div>
+    {
+      appendix.length > 0 && (
+        <>
+          <h2 class="mt-10 mb-5 border-l-4 border-(--color-indigo) pl-3 text-xl">付録</h2>
+          <div class="grid gap-3">
+            {appendix.map((entry) => (
+              <ChapterCard entry={entry} />
+            ))}
+          </div>
+        </>
+      )
+    }
+  </section>
+
+  <script>
+    // 読了済みの章カードに ✓ を付ける（プログレッシブエンハンスメント）
+    try {
+      const read = new Set<string>(JSON.parse(localStorage.getItem("yaruo-dsp:read") ?? "[]"));
+      document.querySelectorAll<HTMLElement>(".chapter-card[data-slug]").forEach((card) => {
+        if (read.has(card.dataset.slug ?? "")) card.classList.add("is-read");
+      });
+    } catch {
+      /* noop */
+    }
+  </script>
+</Layout>

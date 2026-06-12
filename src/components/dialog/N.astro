@@ -1,0 +1,10 @@
+---
+import Speech from "./Speech.astro";
+import type { Mood } from "./Avatar.astro";
+
+interface Props {
+  mood?: Mood;
+}
+---
+
+<Speech speaker="yaranaio" mood={Astro.props.mood}><slot /></Speech>

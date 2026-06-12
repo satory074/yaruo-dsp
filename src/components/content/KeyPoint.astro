@@ -1,0 +1,12 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title = "この章のまとめ" } = Astro.props;
+---
+
+<section class="keypoint">
+  <div class="keypoint-title">{title}</div>
+  <slot />
+</section>

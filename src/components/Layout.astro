@@ -1,0 +1,88 @@
+---
+import "../styles/globals.css";
+import "katex/dist/katex.min.css";
+
+interface Props {
+  title: string;
+  description: string;
+  slug?: string; // 章ページのみ。読了記録に使う
+}
+
+const { title, description, slug } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const siteTitle = "やる夫で学ぶディジタル信号処理";
+const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="article" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@400;600&family=Shippori+Mincho+B1:wght@700;800&display=swap"
+    />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header-inner">
+        <a class="site-mark" href={`${base}/`}>やる夫で学ぶディジタル信号処理</a>
+        <nav>
+          <a href={`${base}/`}>目次</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-[780px] px-5 pt-8 pb-4" data-base={base} data-slug={slug}>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer-inner">
+        <p>
+          本サイトは、鏡 慎吾先生（東北大学）の教材
+          「<a
+            href="https://web.archive.org/web/20230307055724/http://www.ic.is.tohoku.ac.jp/~swk/lecture/yaruodsp/main.html"
+            rel="external noopener">やる夫で学ぶディジタル信号処理</a>」
+          の章構成を参考に、本文・図・デモをすべて新規制作した独立の非公式教材です。
+          原作教材の本文・アスキーアートは含みません。
+        </p>
+        <p>
+          誤りの指摘・感想は
+          <a href="https://github.com/satory074/yaruo-dsp/issues" rel="external noopener">GitHub Issues</a>
+          まで。
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      import { bootDemos } from "../demos/runtime";
+
+      // デモのマウント（viewport に近づいた時点で遅延ロード）
+      bootDemos(document);
+
+      // 読了記録: 章ページを開いたら localStorage に slug を積む
+      const main = document.querySelector("main");
+      const slug = main?.getAttribute("data-slug");
+      if (slug) {
+        try {
+          const KEY = "yaruo-dsp:read";
+          const read = new Set<string>(JSON.parse(localStorage.getItem(KEY) ?? "[]"));
+          read.add(slug);
+          localStorage.setItem(KEY, JSON.stringify([...read]));
+        } catch {
+          // localStorage が使えない環境では何もしない
+        }
+      }
+    </script>
+  </body>
+</html>

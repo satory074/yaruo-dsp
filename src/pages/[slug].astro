@@ -1,0 +1,49 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../components/Layout.astro";
+import ChapterNav from "../components/ChapterNav.astro";
+import Y from "../components/dialog/Y.astro";
+import N from "../components/dialog/N.astro";
+import Demo from "../components/Demo.astro";
+import Note from "../components/content/Note.astro";
+import KeyPoint from "../components/content/KeyPoint.astro";
+
+export async function getStaticPaths() {
+  const chapters = (await getCollection("chapters")).sort((a, b) => a.data.order - b.data.order);
+  return chapters.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, prev: chapters[i - 1] ?? null, next: chapters[i + 1] ?? null },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await render(entry);
+const { title, chapterLabel, summary, goals } = entry.data;
+---
+
+<Layout title={`${chapterLabel} ${title}`} description={summary} slug={entry.id}>
+  <article class="prose-dsp">
+    <header class="mb-10">
+      <p class="font-mono text-sm tracking-[0.18em] text-(--color-vermilion)">{chapterLabel}</p>
+      <h1 class="mt-1 text-3xl">{title}</h1>
+      {
+        goals.length > 0 && (
+          <div class="mt-5 rounded-xl border border-(--color-rule) bg-(--color-paper-deep) px-5 py-4">
+            <p class="font-(family-name:--font-display) text-sm font-bold text-(--color-indigo)">この章のねらい</p>
+            <ul class="mt-2 grid gap-1 text-sm">
+              {goals.map((goal) => (
+                <li class="pl-5 relative before:content-['☞'] before:absolute before:left-0 before:text-(--color-vermilion)">
+                  {goal}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </header>
+
+    <Content components={{ Y, N, Demo, Note, KeyPoint }} />
+
+    <ChapterNav prev={prev} next={next} />
+  </article>
+</Layout>

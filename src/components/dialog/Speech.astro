@@ -1,0 +1,19 @@
+---
+import Avatar, { type Mood } from "./Avatar.astro";
+
+interface Props {
+  speaker: "yaruo" | "yaranaio";
+  mood?: Mood;
+}
+
+const { speaker, mood = "normal" } = Astro.props;
+const name = speaker === "yaruo" ? "やる夫" : "やらない夫";
+---
+
+<div class={`speech speech--${speaker}`} role="group" aria-label={`${name}の発言`}>
+  <div class="speech-avatar">
+    <Avatar character={speaker} mood={mood} />
+    <span class="speech-name">{name}</span>
+  </div>
+  <div class="speech-bubble"><slot /></div>
+</div>
