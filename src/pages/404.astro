@@ -1,0 +1,27 @@
+---
+import Layout from "../components/Layout.astro";
+import Avatar from "../components/dialog/Avatar.astro";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<Layout title="ページが見つかりません" description="お探しのページは見つかりませんでした。">
+  <section class="py-16 text-center">
+    <div class="flex justify-center gap-2">
+      <Avatar character="yaruo" mood="surprised" size={72} />
+      <Avatar character="yaranaio" mood="think" size={72} />
+    </div>
+    <h1 class="mt-6 text-5xl font-mono text-(--color-vermilion)">404</h1>
+    <p class="mt-4 text-(--color-ink-soft)">
+      そのページは見つからなかったお…。URL が間違ってるか、まだ書かれてないみたいだお。
+    </p>
+    <p class="mt-8">
+      <a
+        href={`${base}/`}
+        class="inline-block rounded-lg border-2 border-(--color-vermilion) px-5 py-2 font-(family-name:--font-display) font-bold no-underline"
+      >
+        目次に戻る
+      </a>
+    </p>
+  </section>
+</Layout>
