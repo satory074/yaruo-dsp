@@ -17,7 +17,7 @@ npm run test:dist  # build 後の dist/ HTML 検査
 ## アーキテクチャ
 
 - `src/content/chapters/*.mdx` — 全19章。`order` でソート（0=前置き、1〜16=本編、90/91=付録）
-- `src/pages/[slug].astro` — `<Content components={{ Y, N, Demo, Note, KeyPoint }} />` で注入するため**章MDXにimport文は書かない**。`sidebar`/`crumb` を `Layout` に渡す
+- `src/pages/[slug].astro` — `<Content components={{ Y, N, Demo, Note, KeyPoint, KeyEq, Caution, Def, Hl }} />` で注入するため**章MDXにimport文は書かない**。`sidebar`/`crumb` を `Layout` に渡す
 - `src/components/Layout.astro` + `src/components/Sidebar.astro` — 章ページは `.page-shell`（grid: 260px サイド目次 + 本文）。`sidebar` prop 真のときだけ `Sidebar`＋ヘッダのハンバーガー＋暗幕を出す（indexは目次そのものなので非表示）。サイド目次の**現在章の節リンクとスクロール追従はLayoutのインラインscriptがクライアントで生成**（MDXがh2/h3にidを自動付与するのを利用、rehype-slug不要）。ヘッダは sticky、モバイル≤960pxはドロワー化（`body.toc-open`）
 - `src/lib/dsp.ts` — 数値計算（DOM非依存・純TS）。FFT/窓/たたみこみ/freqz/部分和
 - `src/demos/` — `manifest.ts`（純データ台帳）+ `index.ts`（遅延ローダ）+ `chNN/*.ts`（DemoDef）+ `runtime.ts`（マウント/rAF/コントロール生成）+ `plot.ts`（オシロ風描画ヘルパ）
@@ -25,13 +25,24 @@ npm run test:dist  # build 後の dist/ HTML 検査
 
 ## MDX 執筆規約（破るとビルドが落ちる/テストが落ちる）
 
-1. `<Y>`/`<N>`/`<Note>`/`<KeyPoint>` タグと本文の間に**空行必須**（MDXがchildrenをmarkdown解釈する条件）
-2. **閉じタグの対応に注意**。`<Note>` を `</N>` で閉じる事故が実際に起きた
+1. `<Y>`/`<N>`/`<Note>`/`<KeyPoint>`/`<KeyEq>`/`<Caution>`/`<Def>` タグと本文の間に**空行必須**（MDXがchildrenをmarkdown解釈する条件）。`<KeyEq>` 内の `$$...$$` も前後空行で囲む
+2. **閉じタグの対応に注意**。`<Note>` を `</N>` で閉じる事故が実際に起きた（`<Caution>` を `</Note>` で閉じる等も同様にビルドが落ちる）
 3. 数式: インライン `$...$`、ブロックは空行で囲んだ `$$...$$`。式番号は `\tag{1.1}`
 4. frontmatter `demos: ["id1", "id2"]` は本文の `<Demo id=...>` と**完全一致**（smoketestが検証）
 5. 各章末に `<KeyPoint>`（箇条書きでまとめ）
 6. 吹き出しの mood: `normal/smile/surprised/cry/angry/smug/think`（例: `<Y mood="cry">`）
 7. 口調: やる夫=「〜だお」、知ってる単語には食いつく、計算はたまに自力で正解する。やらない夫=「〜だろ」「常識的に考えて」、容赦なく数式を出すが直観的な説明を必ず添える
+
+## 強調コンポーネント（大事な部分を意味別に際立たせる。`globals.css` にスタイル）
+
+段階的・意味別の強調レイヤー。アクセント色の使いすぎを避けるため**色は役割で固定**し、callout は色＋アイコン＋ラベルで識別（色覚配慮）。`src/components/content/` に `KeyEq`/`Caution`/`Def`/`Hl`。
+
+- `<KeyEq label="サンプリングの公式">`（辰砂・最上位）— 導出の**山場の式／結論を1つだけ**枠で囲む。中に `$$...$$` を1本。`label` が右上のmono銘板チップになる。各章0〜2個。
+- `<Def title="ナイキスト周波数">`（藍・構造）— 中核**用語の定義**。各章0〜2個。
+- `<Caution title="…">`（黄土 `--color-ochre` ・唯一の警告色）— **落とし穴・よくある誤解・「〜できない」**。各章0〜2個。
+- `<Hl>位相</Hl>`（インライン蛍光ペン）— 文中の**一番大事な一語だけ**。1文1か所、各章2〜4個まで（多用厳禁）。
+- 番号付き（`\tag`）の式は `globals.css` の `.katex-display:has(.tag)` で**自動的に薄い左罫**が付く＝著者が印を付けた重要式。だから KeyEq は「その章の唯一の山場」に限る（番号付き全部を囲わない）。
+- 既存 `<Note>`（破線・✎・補助情報）が実は定義なら `<Def>`、警告なら `<Caution>` へ寄せる。純粋な余談は `<Note>` のまま。
 
 ## デモ追加手順（3点セット、欠けると smoketest が落ちる）
 

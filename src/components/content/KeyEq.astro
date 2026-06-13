@@ -1,0 +1,11 @@
+---
+interface Props {
+  label?: string;
+}
+
+const { label = "重要" } = Astro.props;
+---
+
+<div class="key-eq" data-label={label}>
+  <slot />
+</div>

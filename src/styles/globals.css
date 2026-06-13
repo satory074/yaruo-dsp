@@ -17,6 +17,7 @@
   --color-vermilion: #bf4127; /* 辰砂 — 見出し・強調（紙地で4.8:1 AA） */
   --color-indigo: #274a6d; /* 藍 — リンク・やらない夫 */
   --color-moss: #3f6f4e; /* 計測器グリーンの紙地版 — デモ数・読了・パワードット（5.4:1 AA） */
+  --color-ochre: #9a5512; /* 黄土 — 注意・落とし穴（唯一の警告色。紙地で約5.3:1 AA） */
   --color-yaruo: #fdf3cf; /* やる夫の吹き出し地 */
   --color-yaruo-edge: #e4c96b;
   --color-yaranaio: #e8edf2; /* やらない夫の吹き出し地 */
@@ -56,6 +57,28 @@ body {
 
 :root {
   --header-h: 3.25rem;
+}
+
+/* キーボード操作の可視化（従来 focus リングが無く実害があった） */
+:focus-visible {
+  outline: 2px solid var(--color-indigo);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* 動きに敏感なユーザーへの配慮 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .chapter-card:hover {
+    transform: none;
+  }
 }
 
 /* ---------- ページ骨格（サイド目次つき／なし） ---------- */
@@ -354,6 +377,15 @@ code {
   font-size: 1.06em;
 }
 
+/* 番号付き($\tag$)の式＝著者が参照用に印を付けた重要式。
+   無印の中間式と区別するためごく薄い左罫を添える。 */
+.prose-dsp .katex-display:has(.tag) {
+  border-left: 2px solid color-mix(in srgb, var(--color-vermilion) 35%, transparent);
+  background: color-mix(in srgb, var(--color-vermilion) 3%, transparent);
+  border-radius: 0 6px 6px 0;
+  padding-left: 0.85rem;
+}
+
 /* ---------- 吹き出し（対話UI） ---------- */
 
 .speech {
@@ -606,12 +638,28 @@ code {
   background: color-mix(in srgb, var(--color-vermilion) 4%, var(--color-paper));
 }
 .keypoint .keypoint-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-family: var(--font-display);
   font-weight: 800;
   color: var(--color-vermilion);
   font-size: 1.05rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
   letter-spacing: 0.06em;
+}
+/* 章末の最重要ブロックと一目で分かるmono銘板チップ */
+.keypoint .keypoint-title::before {
+  content: "KEY POINTS";
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--color-surface);
+  background: var(--color-vermilion);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  flex: none;
 }
 .keypoint ul {
   list-style: none;
@@ -629,6 +677,112 @@ code {
   position: absolute;
   left: 0;
   color: var(--color-vermilion);
+}
+
+/* ---------- 強調レイヤー（重要式・定義・注意・蛍光ペン） ---------- */
+
+/* 重要式・結論ボックス（最上位の強調＝辰砂）。導出の山場の式を枠で際立たせる */
+.key-eq {
+  position: relative;
+  margin: 2.2rem 0;
+  padding: 1.6rem 1.3rem 1rem;
+  border: 1.5px solid var(--color-vermilion);
+  border-left-width: 4px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-vermilion) 5%, var(--color-paper));
+}
+.key-eq::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -0.72rem;
+  left: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-surface);
+  background: var(--color-vermilion);
+  padding: 0.18rem 0.55rem;
+  border-radius: 5px;
+}
+/* KeyEq内の式は二重装飾しない（番号付き自動罫を打ち消し、中央のまま） */
+.prose-dsp .key-eq .katex-display,
+.prose-dsp .key-eq .katex-display:has(.tag) {
+  margin: 0;
+  border: none;
+  background: none;
+  padding-left: 0.2rem;
+}
+
+/* 定義ボックス（構造＝藍）。中核用語の定義を明示 */
+.def-box {
+  margin: 1.8rem 0;
+  border: 1px solid color-mix(in srgb, var(--color-indigo) 40%, var(--color-rule));
+  border-left: 4px solid var(--color-indigo);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-indigo) 5%, var(--color-paper));
+  padding: 1rem 1.2rem;
+}
+.def-box .def-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--color-indigo);
+  margin-bottom: 0.45rem;
+}
+.def-box .def-title::before {
+  content: "定";
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-surface);
+  background: var(--color-indigo);
+  width: 1.5em;
+  height: 1.5em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex: none;
+}
+.def-box > :nth-child(2) { margin-top: 0; }
+.def-box > :last-child { margin-bottom: 0; }
+
+/* 注意・落とし穴 callout（唯一の警告色＝黄土）。色＋アイコン＋ラベルで識別 */
+.caution-box {
+  margin: 1.8rem 0;
+  border: 1px solid color-mix(in srgb, var(--color-ochre) 45%, var(--color-rule));
+  border-left: 4px solid var(--color-ochre);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-ochre) 6%, var(--color-paper));
+  padding: 1rem 1.2rem;
+}
+.caution-box .caution-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-ochre);
+  margin-bottom: 0.4rem;
+}
+.caution-box .caution-title::before {
+  content: "⚠ ";
+}
+.caution-box > :nth-child(2) { margin-top: 0; }
+.caution-box > :last-child { margin-bottom: 0; }
+
+/* インライン蛍光ペン（hero-em の辰砂下線イディオムを本文へ。1文1か所まで） */
+.hl {
+  background-color: transparent;
+  background-image: linear-gradient(
+    transparent 55%,
+    color-mix(in srgb, var(--color-vermilion) 18%, transparent) 0
+  );
+  color: inherit;
+  padding-bottom: 0.04em;
+  border-radius: 1px;
 }
 
 /* ---------- index ヒーロー ---------- */

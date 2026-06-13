@@ -1,0 +1,12 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title = "注意" } = Astro.props;
+---
+
+<aside class="caution-box">
+  <div class="caution-title">{title}</div>
+  <slot />
+</aside>

@@ -1,0 +1,12 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title = "定義" } = Astro.props;
+---
+
+<aside class="def-box">
+  <div class="def-title">{title}</div>
+  <slot />
+</aside>

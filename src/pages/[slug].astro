@@ -7,6 +7,10 @@ import N from "../components/dialog/N.astro";
 import Demo from "../components/Demo.astro";
 import Note from "../components/content/Note.astro";
 import KeyPoint from "../components/content/KeyPoint.astro";
+import KeyEq from "../components/content/KeyEq.astro";
+import Caution from "../components/content/Caution.astro";
+import Def from "../components/content/Def.astro";
+import Hl from "../components/content/Hl.astro";
 
 export async function getStaticPaths() {
   const chapters = (await getCollection("chapters")).sort((a, b) => a.data.order - b.data.order);
@@ -42,7 +46,7 @@ const { title, chapterLabel, summary, goals } = entry.data;
       }
     </header>
 
-    <Content components={{ Y, N, Demo, Note, KeyPoint }} />
+    <Content components={{ Y, N, Demo, Note, KeyPoint, KeyEq, Caution, Def, Hl }} />
 
     <ChapterNav prev={prev} next={next} />
   </article>
