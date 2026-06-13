@@ -43,6 +43,8 @@ DemoDef の規約:
 - 描画は `draw(f)` で毎回全描画（`f.params` が現在値）。`plot.ts` の `makeViewport/axes/plotFn/plotLine/plotStem` を使い見た目を統一
 - 色は `COLORS`（green=主信号, amber=強調値, cyan/pink=副系列, textDim=参考線）
 - アニメは `animated: true` + `f.t`（秒）。再生ボタンは runtime が自動付与
+- 再生ボタン＋手動スライダーを両立させたい時は `f.playing` で分岐（再生中は `f.t` から掃引パラメータを算出、停止中は `f.params` のスライダー値を使う）。例: `const n = f.playing ? Math.floor(f.t / 0.6) % 12 : f.params.n;`
+- 各 `<Demo caption>` は「操作→観察→意味」の順で1〜2文（初学者は静止＋観察プロンプトが最も学習効率が高いという研究に基づく）
 - ドラッグは `onPointer`（true を返すと再描画）
 - **jsdom に canvas は無い**。draw 内で DOM API を直接触らない（ctx 経由のみ）
 

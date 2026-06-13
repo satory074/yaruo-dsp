@@ -24,6 +24,8 @@ export interface DemoFrame {
   params: Record<string, number>;
   /** 再生経過秒（animated のみ増加） */
   t: number;
+  /** 再生中なら true。animated デモが「再生中は t で駆動、停止中はスライダー値」を切り替えるのに使う */
+  playing: boolean;
 }
 
 export interface PointerInfo {

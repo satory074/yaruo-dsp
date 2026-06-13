@@ -100,7 +100,7 @@ export function mountDemo(el: HTMLElement, def: DemoDef, hooks: MountHooks = {})
     }
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     g.clearRect(0, 0, w, h);
-    const frame: DemoFrame = { g, width: w, height: h, params, t };
+    const frame: DemoFrame = { g, width: w, height: h, params, t, playing };
     def.draw(frame);
     drawCount++;
   };
