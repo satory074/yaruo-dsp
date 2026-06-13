@@ -10,7 +10,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "typecheck": "astro check",
-    "test": "tsx scripts/smoketest.ts && tsx scripts/domtest.ts",
+    "test": "tsx scripts/smoketest.ts && tsx scripts/smoketest-design.ts && tsx scripts/domtest.ts",
     "test:dist": "tsx scripts/disttest.ts"
   },
   "dependencies": {
