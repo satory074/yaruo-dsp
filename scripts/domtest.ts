@@ -150,8 +150,15 @@ const { demoMeta } = await import("../src/demos/manifest");
     assert(def.id === id, `${id}: DemoDef.id が一致 (got ${def.id})`);
     assert(id in demoMeta, `${id}: manifest に存在`);
     const el = makeDemoElement(id);
+    // 同期rafスタブはアニメループで無限再帰するため、デモごとに回数上限を設ける
+    let budget = 50;
+    const boundedRaf = (cb: FrameRequestCallback): number => {
+      if (budget-- <= 0) return 0;
+      cb((50 - budget) * 16);
+      return 50 - budget;
+    };
     try {
-      const handle = mountDemo(el, def, { getContext: () => fakeContext(), raf, caf: () => {} });
+      const handle = mountDemo(el, def, { getContext: () => fakeContext(), raf: boundedRaf, caf: () => {} });
       assert(handle.drawCount() >= 1, `${id}: 初回描画`);
       // 全スライダーを最小・最大に振って描画が例外を出さないこと
       const sliders = el.querySelectorAll<HTMLInputElement>('input[type="range"]');
