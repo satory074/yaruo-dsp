@@ -14,12 +14,14 @@ function envelope(w: number): number {
 
 const def: DemoDef = {
   id: "period-to-continuum",
+  animated: true,
   controls: [
     { kind: "slider", id: "T0", label: "周期 T0", min: 2, max: 16, step: 0.5, value: 2, format: (v) => v.toFixed(1) },
     { kind: "checkbox", id: "env", label: "包絡線（フーリエ変換）", value: 1 },
   ],
-  draw({ g, width, height, params }) {
-    const T0 = params.T0;
+  draw({ g, width, height, params, t, playing }) {
+    // 停止中はスライダー値、再生中は T0 を 2→16 で自動掃引してループ（線スペクトルが密になり連続に溶ける）
+    const T0 = playing ? 2 + ((t * 1.2) % 14) : params.T0;
     const w0 = (2 * Math.PI) / T0;
     const split = Math.round(height * 0.42);
 

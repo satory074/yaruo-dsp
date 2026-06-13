@@ -19,6 +19,7 @@ function cross(g: CanvasRenderingContext2D, x: number, y: number, s: number): vo
 
 const def: DemoDef = {
   id: "s-plane-impulse",
+  animated: true,
   controls: [
     {
       kind: "slider",
@@ -41,8 +42,9 @@ const def: DemoDef = {
       format: (v) => v.toFixed(1),
     },
   ],
-  draw({ g, width, height, params }) {
-    const sigma = params.sigma;
+  draw({ g, width, height, params, t, playing }) {
+    // 再生中は実部 σ を -1 → 0.6 へ自動掃引（ループ）。停止中はスライダー値。
+    const sigma = playing ? -1 + ((t * 0.4) % 1.6) : params.sigma;
     const omega = params.omega;
 
     // --- 左 40%: s平面（座標変換は自前） ---

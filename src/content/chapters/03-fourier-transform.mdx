@@ -38,7 +38,7 @@ demos: ["period-to-continuum", "rect-sinc"]
 
 <Demo
   id="period-to-continuum"
-  caption="周期T0を伸ばすと、線スペクトルの間隔 ω0=2π/T0 が狭くなり、棒が密になっていく。包絡線（破線）は変わらない。極限で棒は連続曲線=フーリエ変換に溶け込む。"
+  caption="再生で周期 T0 が自動で伸びる（操作・スライダー手動も可）→ 線スペクトルの間隔 ω0=2π/T0 が詰まって棒が密になる一方、棒の先が乗る包絡線（破線）は変わらない（観察）→ T0→∞ の極限で棒は連続曲線に溶け、それがフーリエ変換そのもの（意味）。"
 />
 
 <Y mood="surprised">
@@ -114,6 +114,12 @@ $$
 
 </Note>
 
+<Note title="1/2π はどこに付く?">
+
+順方向（信号→スペクトル）には係数を付けない。連続のフーリエ逆変換だけ $1/2\pi$ が付く。離散版（第6章のDFT）では逆変換に $1/N$ が付く。逆変換側に「足し戻すときの帳尻合わせ」が1個付く、と覚えておけば迷わない。
+
+</Note>
+
 ## 3.3 重要なフーリエ変換対
 
 ### 3.3.1 矩形関数と sinc 関数
@@ -123,11 +129,35 @@ $$
 フーリエ変換と言えばまずこれ、という変換対を2組覚えてもらう。1組目は矩形パルスだ。幅 $T$・高さ1の矩形 $\mathrm{rect}(t/T)$ を式 (3.1) に入れると
 
 $$
-F(\omega) = \int_{-T/2}^{T/2} e^{-j\omega t} dt = \frac{2\sin(\omega T/2)}{\omega} = T\,\mathrm{sinc}\!\left(\frac{\omega T}{2\pi}\right)
+F(\omega) = \int_{-T/2}^{T/2} e^{-j\omega t} dt = \frac{2\sin(\omega T/2)}{\omega}
 \tag{3.3}
 $$
 
-ここで $\mathrm{sinc}(x) = \sin(\pi x)/(\pi x)$ だ。
+ここまでは素朴に積分しただけだ。この $\dfrac{2\sin(\omega T/2)}{\omega}$ を、信号処理で標準の **sinc 関数**を使って書き直す。本教材では sinc を次の**正規化形**に統一する。
+
+$$
+\mathrm{sinc}(x) = \frac{\sin(\pi x)}{\pi x}
+$$
+
+</N>
+
+<Y mood="think">
+
+分子は $\sin(\pi x)$ なのに、(3.3) の分子は $\sin(\omega T/2)$ だお。中身を合わせるには $\pi x = \omega T/2$、つまり $x = \dfrac{\omega T}{2\pi}$ と置けばいいんだお?
+
+</Y>
+
+<N mood="smile">
+
+そのとおり、それが変形の一手だ。$x = \dfrac{\omega T}{2\pi}$ と置くと、定義より $\mathrm{sinc}(x) = \dfrac{\sin(\pi x)}{\pi x} = \dfrac{\sin(\omega T/2)}{\omega T/2}$。これを (3.3) の形にするには分子分母に $T$ を補えばよくて
+
+$$
+\frac{2\sin(\omega T/2)}{\omega}
+= T \cdot \frac{\sin(\omega T/2)}{\omega T/2}
+= T\,\mathrm{sinc}\!\left(\frac{\omega T}{2\pi}\right)
+$$
+
+と書き直せる（式 (3.3) の右辺はこの正規化 sinc の形だと思っていい）。係数の $T$ は $\omega = 0$ での高さ（$\mathrm{sinc}(0) = 1$ なので $F(0) = T$、これは矩形パルスの面積そのものだ）だな。
 
 </N>
 
@@ -145,7 +175,7 @@ $$
 
 <Demo
   id="rect-sinc"
-  caption="パルス幅Tを広げるとsincの山は高く・狭くなり、Tを狭めると低く・広くなる。時間方向の幅と周波数方向の幅は反比例する。"
+  caption="パルス幅 T を狭める（操作）→ 時間側の箱は細くなるのに、周波数側の sinc は横へびよーんと広がる（観察）→ 時間幅と周波数幅は反比例し、短い（鋭い）信号ほど広い周波数成分を含む＝不確定性原理の一例（意味）。"
 />
 
 <Y>

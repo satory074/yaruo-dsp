@@ -11,9 +11,11 @@ const Y = convolve(X, H); // 長さ 8（n=0..7）
 
 const def: DemoDef = {
   id: "convolution-step",
+  animated: true,
   controls: [{ kind: "slider", id: "n", label: "位置 n", min: 0, max: 11, step: 1, value: 0 }],
-  draw({ g, width, height, params }) {
-    const n = Math.round(params.n);
+  draw({ g, width, height, params, t, playing }) {
+    // 再生中は位置 n を 0→11 自動掃引（h が滑って y[n] が左から埋まる）、停止中はスライダー値。
+    const n = playing ? Math.floor(t / 0.6) % 12 : Math.round(params.n);
     const h = height / 3;
     const kMin = -3;
     const kMax = 12;

@@ -21,6 +21,7 @@ function cross(g: CanvasRenderingContext2D, x: number, y: number, s: number): vo
 
 const def: DemoDef = {
   id: "z-plane-impulse",
+  animated: true,
   controls: [
     {
       kind: "slider",
@@ -43,8 +44,9 @@ const def: DemoDef = {
       format: (v) => `${v.toFixed(2)} rad`,
     },
   ],
-  draw({ g, width, height, params }) {
-    const r = params.r;
+  draw({ g, width, height, params, t, playing }) {
+    // 再生中は極の半径 r を 0.3 → 1.3 へ自動掃引（ループ）。停止中はスライダー値。
+    const r = playing ? 0.3 + ((t * 0.25) % 1.0) : params.r;
     const theta = params.theta;
 
     // --- 左 40%: z平面（座標変換は自前） ---

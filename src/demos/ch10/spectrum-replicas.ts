@@ -18,6 +18,7 @@ const REPLICA_KS = [-3, -2, -1, 1, 2, 3];
 
 const def: DemoDef = {
   id: "spectrum-replicas",
+  animated: true,
   controls: [
     {
       kind: "slider",
@@ -31,8 +32,9 @@ const def: DemoDef = {
     },
     { kind: "checkbox", id: "reps", label: "複製を表示", value: 1 },
   ],
-  draw({ g, width, height, params }) {
-    const ws = params.ws;
+  draw({ g, width, height, params, t, playing }) {
+    // 再生中は ωs を 20 → 4 へ自動で下げてループ。停止中はスライダー値。
+    const ws = playing ? 20 - ((t * 2.5) % 16) : params.ws;
     const overlap = ws < 2 * WMAX; // 複製が重なる条件
 
     const vp = makeViewport(width, height, { x0: -24, x1: 24, y0: -0.18, y1: 1.5 });
