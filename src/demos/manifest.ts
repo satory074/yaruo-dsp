@@ -27,6 +27,7 @@ export const demoMeta: Record<string, DemoMeta> = {
   "dft-bins-on-dtft": { title: "DFT BINS ON DTFT", chapter: 6, height: 320 },
   "dft-basis": { title: "DFT BASIS — N=16", chapter: 6, height: 340 },
   "fft-recursion-tree": { title: "FFT — DIVIDE & CONQUER", chapter: 6, height: 360 },
+  "fft-butterfly": { title: "FFT — BUTTERFLY FLOW GRAPH", chapter: 6, height: 360 },
   // 第7章 時間シフトと変調
   "shift-phase": { title: "TIME SHIFT → LINEAR PHASE", chapter: 7, height: 400 },
   "modulation-shift": { title: "MODULATION — SPECTRUM SHIFT", chapter: 7, height: 360 },

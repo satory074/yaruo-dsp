@@ -16,6 +16,7 @@ export const demoLoaders: Record<string, () => Promise<{ default: DemoDef }>> = 
   "dft-bins-on-dtft": () => import("./ch06/dft-bins-on-dtft"),
   "dft-basis": () => import("./ch06/dft-basis"),
   "fft-recursion-tree": () => import("./ch06/fft-recursion-tree"),
+  "fft-butterfly": () => import("./ch06/fft-butterfly"),
   "shift-phase": () => import("./ch07/shift-phase"),
   "modulation-shift": () => import("./ch07/modulation-shift"),
   "convolution-step": () => import("./ch08/convolution-step"),
