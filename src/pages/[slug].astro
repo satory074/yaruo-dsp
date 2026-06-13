@@ -21,7 +21,7 @@ const { Content } = await render(entry);
 const { title, chapterLabel, summary, goals } = entry.data;
 ---
 
-<Layout title={`${chapterLabel} ${title}`} description={summary} slug={entry.id}>
+<Layout title={`${chapterLabel} ${title}`} description={summary} slug={entry.id} sidebar crumb={chapterLabel}>
   <article class="prose-dsp">
     <header class="mb-10">
       <p class="font-mono text-sm tracking-[0.18em] text-(--color-vermilion)">{chapterLabel}</p>

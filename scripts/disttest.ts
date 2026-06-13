@@ -62,7 +62,7 @@ console.log(`[dist] 章ページ OK (${chapterFiles.length} chapters)`);
   const html = readFileSync(join(dist, "index.html"), "utf-8");
   const cardCount = (html.match(/class="chapter-card"/g) ?? []).length;
   assert(cardCount === chapterFiles.length, `index: 章カード ${cardCount} == 章数 ${chapterFiles.length}`);
-  assert(html.includes("web.archive.org"), "index: 元サイトへのクレジットリンク");
+  assert(html.includes("ic.is.tohoku.ac.jp/~swk/lecture/yaruodsp"), "index: 元サイトへのクレジットリンク");
   console.log("[dist] index OK");
 }
 

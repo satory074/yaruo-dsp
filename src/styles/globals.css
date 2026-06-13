@@ -13,8 +13,10 @@
   --color-ink: #2b2722;
   --color-ink-soft: #5a5247;
   --color-rule: #d9cfba;
-  --color-vermilion: #c94e2c; /* 朱 — 見出し・強調 */
-  --color-indigo: #2c4a6e; /* 藍 — リンク・やらない夫 */
+  --color-surface: #fffdf6; /* 紙の上に浮く面（カード・サイド目次・ナビ） */
+  --color-vermilion: #bf4127; /* 辰砂 — 見出し・強調（紙地で4.8:1 AA） */
+  --color-indigo: #274a6d; /* 藍 — リンク・やらない夫 */
+  --color-moss: #3f6f4e; /* 計測器グリーンの紙地版 — デモ数・読了・パワードット（5.4:1 AA） */
   --color-yaruo: #fdf3cf; /* やる夫の吹き出し地 */
   --color-yaruo-edge: #e4c96b;
   --color-yaranaio: #e8edf2; /* やらない夫の吹き出し地 */
@@ -50,6 +52,243 @@ body {
 
 ::selection {
   background: color-mix(in srgb, var(--color-vermilion) 25%, transparent);
+}
+
+:root {
+  --header-h: 3.25rem;
+}
+
+/* ---------- ページ骨格（サイド目次つき／なし） ---------- */
+
+.page-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 2.5rem;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  align-items: start;
+}
+.page-main {
+  max-width: 760px;
+  min-width: 0; /* KaTeX/canvas が grid 列を押し広げて横スクロールするのを防ぐ（必須） */
+  padding: 2rem 0 1rem;
+}
+.page-main--solo {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 1rem;
+}
+
+/* ---------- サイド目次（TOC） ---------- */
+
+.toc {
+  position: sticky;
+  top: calc(var(--header-h) + 1rem);
+  max-height: calc(100vh - var(--header-h) - 2rem);
+  overflow-y: auto;
+  padding: 1.6rem 0.4rem 2rem 0;
+  border-right: 1px dashed var(--color-rule);
+  overscroll-behavior: contain;
+}
+.toc-home {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  margin-bottom: 1.2rem;
+}
+.toc-home:hover {
+  color: var(--color-vermilion);
+}
+
+.toc-group {
+  margin-bottom: 1.3rem;
+}
+.toc-group-label {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  margin: 0 0 0.5rem 0.2rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--color-rule);
+}
+.toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.1rem;
+}
+.toc-link {
+  display: grid;
+  gap: 0.05rem;
+  padding: 0.3rem 0.6rem;
+  border-left: 3px solid transparent;
+  border-radius: 0 6px 6px 0;
+  text-decoration: none;
+  color: var(--color-ink-soft);
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+.toc-link:hover {
+  background: color-mix(in srgb, var(--color-vermilion) 6%, transparent);
+  color: var(--color-ink);
+}
+.toc-link-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-soft);
+}
+.toc-link-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+.toc-link[aria-current="page"] {
+  border-left-color: var(--color-vermilion);
+  background: color-mix(in srgb, var(--color-vermilion) 8%, transparent);
+  color: var(--color-ink);
+}
+.toc-link[aria-current="page"] .toc-link-label {
+  color: var(--color-vermilion);
+}
+
+/* 現在章の節リンク（クライアントで article から生成） */
+.toc-sections {
+  list-style: none;
+  margin: 0.25rem 0 0.5rem 0.7rem;
+  padding-left: 0.9rem;
+  display: grid;
+  gap: 0.05rem;
+  border-left: 1px solid var(--color-rule);
+}
+.toc-sec a {
+  display: block;
+  padding: 0.18rem 0.5rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  border-radius: 5px;
+}
+.toc-sec a:hover {
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-ink) 4%, transparent);
+}
+.toc-sec--sub a {
+  padding-left: 1.2rem;
+  font-size: 0.74rem;
+}
+.toc-sec a.is-active {
+  color: var(--color-vermilion);
+  font-weight: 700;
+}
+.toc-sec a.is-active::before {
+  content: "▸ ";
+  color: var(--color-vermilion);
+}
+
+/* ---------- ヘッダの目次トグル・パンくず ---------- */
+
+.site-crumb {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--color-ink-soft);
+  padding-left: 0.6rem;
+  border-left: 1px solid var(--color-rule);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 16ch;
+}
+.toc-toggle {
+  display: none; /* デスクトップ非表示。≤960px で出す */
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  width: 34px;
+  height: 30px;
+  padding: 0 6px;
+  background: transparent;
+  border: 1px solid var(--color-rule);
+  border-radius: 7px;
+  cursor: pointer;
+  flex: none;
+}
+.toc-toggle span {
+  display: block;
+  height: 2px;
+  background: var(--color-ink);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.toc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(20, 16, 10, 0.38);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+/* ---------- モバイル: サイド目次をドロワー化（≤960px） ---------- */
+
+@media (max-width: 960px) {
+  .page-shell {
+    display: block;
+    padding: 0 1.25rem;
+  }
+  .page-main {
+    max-width: none;
+    padding: 2rem 0 1rem;
+  }
+  .toc-toggle {
+    display: flex;
+  }
+  .toc {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    width: min(82vw, 320px);
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 1.4rem 1rem 2rem;
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-rule);
+    box-shadow: 0 0 40px -8px rgba(34, 28, 18, 0.45);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+  body.toc-open {
+    overflow: hidden;
+  }
+  body.toc-open .toc {
+    transform: none;
+  }
+  body.toc-open .toc-overlay {
+    opacity: 1;
+    visibility: visible;
+  }
+  body.toc-open .toc-toggle span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  body.toc-open .toc-toggle span:nth-child(2) {
+    opacity: 0;
+  }
+  body.toc-open .toc-toggle span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
 }
 
 h1, h2, h3, h4 {
@@ -392,6 +631,53 @@ code {
   color: var(--color-vermilion);
 }
 
+/* ---------- index ヒーロー ---------- */
+
+.hero {
+  margin: 0.5rem 0 3.2rem;
+}
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.7;
+  letter-spacing: 0.2em;
+  color: var(--color-ink-soft);
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 7vw, 3.1rem);
+  line-height: 1.25;
+  margin-top: 0.9rem;
+}
+.hero-em {
+  color: var(--color-vermilion);
+  /* 手描きの罫を引いたような下線（辰砂の蛍光ペン風） */
+  background-image: linear-gradient(
+    transparent 60%,
+    color-mix(in srgb, var(--color-vermilion) 22%, transparent) 0
+  );
+}
+.hero-lead {
+  margin-top: 1.4rem;
+  max-width: 36rem;
+  font-size: 0.95rem;
+  line-height: 1.95;
+}
+/* 計測器のメモリ罫（紙↔計測器の橋渡し） */
+.hero-ticks {
+  height: 14px;
+  margin-top: 1.7rem;
+  border-top: 1.5px solid var(--color-rule);
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-rule) 0,
+    var(--color-rule) 1px,
+    transparent 1px,
+    transparent 16px
+  );
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
 /* ---------- 章カード（目次） ---------- */
 
 .chapter-card {
@@ -401,7 +687,7 @@ code {
   align-items: baseline;
   border: 1.5px solid var(--color-rule);
   border-radius: 12px;
-  background: #fffdf6;
+  background: var(--color-surface);
   padding: 1rem 1.2rem;
   text-decoration: none;
   color: inherit;
@@ -443,7 +729,7 @@ code {
   color: var(--color-ink-soft);
 }
 .chapter-card .chapter-meta .demo-count {
-  color: #1d8a5f;
+  color: var(--color-moss);
 }
 .chapter-card.is-read::after {
   content: "✓ 読了";
@@ -452,7 +738,7 @@ code {
   right: 0.9rem;
   font-family: var(--font-mono);
   font-size: 0.66rem;
-  color: #1d8a5f;
+  color: var(--color-moss);
 }
 
 /* ---------- ナビゲーション ---------- */
@@ -470,7 +756,7 @@ code {
   border-radius: 10px;
   padding: 0.8rem 1rem;
   text-decoration: none;
-  background: #fffdf6;
+  background: var(--color-surface);
   min-width: 0;
 }
 .chapter-nav a:hover {
@@ -503,13 +789,16 @@ code {
 /* ---------- ヘッダ・フッタ ---------- */
 
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   border-bottom: 1px solid var(--color-rule);
-  background: color-mix(in srgb, var(--color-paper) 88%, white);
+  background: color-mix(in srgb, var(--color-paper) 86%, white);
 }
 .site-header-inner {
-  max-width: 780px;
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 0.7rem 1.2rem;
+  padding: 0.7rem 1.25rem;
   display: flex;
   align-items: center;
   gap: 0.7rem;
@@ -537,6 +826,6 @@ code {
   line-height: 1.8;
 }
 .site-footer-inner {
-  max-width: 780px;
+  max-width: 1140px;
   margin: 0 auto;
 }

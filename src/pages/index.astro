@@ -14,26 +14,27 @@ const demoTotal = chapters.reduce((acc, c) => acc + c.data.demos.length, 0);
   title="やる夫で学ぶディジタル信号処理"
   description="フーリエ級数からディジタルフィルタ設計まで、やる夫とやらない夫の対話とインタラクティブなデモで学ぶディジタル信号処理の入門教材。"
 >
-  <section class="mb-14 mt-4">
+  <section class="hero">
     <div class="flex items-end gap-4">
       <div class="flex -space-x-1">
         <Avatar character="yaruo" mood="smile" size={64} />
         <Avatar character="yaranaio" mood="normal" size={64} />
       </div>
-      <p class="font-mono text-xs tracking-[0.2em] text-(--color-ink-soft) pb-2">
-        DIGITAL SIGNAL PROCESSING<br />WITH YARUO
+      <p class="hero-eyebrow pb-2">
+        DIGITAL SIGNAL PROCESSING<br />— WITH YARUO &amp; YARANAIO —
       </p>
     </div>
-    <h1 class="mt-4 text-4xl leading-snug">
+    <h1>
       やる夫で学ぶ<br />
-      <span class="text-(--color-vermilion)">ディジタル信号処理</span>
+      <span class="hero-em">ディジタル信号処理</span>
     </h1>
-    <p class="mt-5 max-w-[36rem] text-[0.95rem] leading-8">
+    <p class="hero-lead">
       フーリエ級数からディジタルフィルタの設計まで。
       数式を恐れるやる夫と、容赦なく数式を出してくるやらない夫の対話に、
       スライダーで動かせる{demoTotal}個のインタラクティブデモを添えて、
       「式が何をしているのか」を目で確かめながら進む信号処理の入門教材。
     </p>
+    <div class="hero-ticks" aria-hidden="true"></div>
   </section>
 
   <section>

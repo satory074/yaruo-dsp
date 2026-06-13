@@ -1,14 +1,17 @@
 ---
 import "../styles/globals.css";
 import "katex/dist/katex.min.css";
+import Sidebar from "./Sidebar.astro";
 
 interface Props {
   title: string;
   description: string;
   slug?: string; // 章ページのみ。読了記録に使う
+  sidebar?: boolean; // 横の目次（サイドTOC）を出すか。章ページのみ true
+  crumb?: string; // ヘッダのパンくず（章ラベルなど）
 }
 
-const { title, description, slug } = Astro.props;
+const { title, description, slug, sidebar = false, crumb } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const siteTitle = "やる夫で学ぶディジタル信号処理";
 const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
@@ -37,26 +40,51 @@ const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
   <body>
     <header class="site-header">
       <div class="site-header-inner">
+        {
+          sidebar && (
+            <button
+              class="toc-toggle"
+              aria-expanded="false"
+              aria-controls="site-toc"
+              aria-label="目次を開く"
+            >
+              <span /><span /><span />
+            </button>
+          )
+        }
         <a class="site-mark" href={`${base}/`}>やる夫で学ぶディジタル信号処理</a>
+        {crumb && <span class="site-crumb">{crumb}</span>}
         <nav>
           <a href={`${base}/`}>目次</a>
         </nav>
       </div>
     </header>
 
-    <main class="mx-auto max-w-[780px] px-5 pt-8 pb-4" data-base={base} data-slug={slug}>
-      <slot />
-    </main>
+    {
+      sidebar ? (
+        <div class="page-shell">
+          <Sidebar slug={slug} />
+          <main class="page-main" data-base={base} data-slug={slug}>
+            <slot />
+          </main>
+          <div class="toc-overlay" data-toc-overlay />
+        </div>
+      ) : (
+        <main class="page-main page-main--solo" data-base={base} data-slug={slug}>
+          <slot />
+        </main>
+      )
+    }
 
     <footer class="site-footer">
       <div class="site-footer-inner">
         <p>
           本サイトは、鏡 慎吾先生（東北大学）の教材
           「<a
-            href="https://web.archive.org/web/20230307055724/http://www.ic.is.tohoku.ac.jp/~swk/lecture/yaruodsp/main.html"
+            href="https://www.ic.is.tohoku.ac.jp/~swk/lecture/yaruodsp/main.html"
             rel="external noopener">やる夫で学ぶディジタル信号処理</a>」
           の章構成を参考に、本文・図・デモをすべて新規制作した独立の非公式教材です。
-          原作教材の本文・アスキーアートは含みません。
+          原作教材の本文・アスキーアートは含みません。原作へのリスペクトを込めて。
         </p>
         <p>
           誤りの指摘・感想は
@@ -84,6 +112,62 @@ const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
         } catch {
           // localStorage が使えない環境では何もしない
         }
+      }
+
+      // サイド目次: 現在章の節（h2/h3）リンクを article から生成し、スクロール追従でハイライト
+      const tocSections = document.querySelector("[data-toc-sections]");
+      const article = document.querySelector("article.prose-dsp");
+      if (tocSections && article) {
+        const heads = Array.from(article.querySelectorAll<HTMLElement>("h2[id], h3[id]"));
+        const linkById = new Map<string, HTMLAnchorElement>();
+        for (const h of heads) {
+          const li = document.createElement("li");
+          li.className = h.tagName === "H3" ? "toc-sec toc-sec--sub" : "toc-sec";
+          const a = document.createElement("a");
+          a.href = "#" + h.id;
+          a.textContent = h.textContent;
+          li.appendChild(a);
+          tocSections.appendChild(li);
+          linkById.set(h.id, a);
+        }
+        if (heads.length > 0 && "IntersectionObserver" in window) {
+          const spy = new IntersectionObserver(
+            (entries) => {
+              for (const e of entries) {
+                if (e.isIntersecting) {
+                  linkById.forEach((a) => a.classList.remove("is-active"));
+                  linkById.get((e.target as HTMLElement).id)?.classList.add("is-active");
+                }
+              }
+            },
+            { rootMargin: "0px 0px -70% 0px" },
+          );
+          heads.forEach((h) => spy.observe(h));
+        }
+      }
+
+      // サイド目次: モバイルのドロワー開閉（Esc・暗幕・リンクで閉じる／スクロールロック／フォーカス移動）
+      const tocToggle = document.querySelector<HTMLButtonElement>(".toc-toggle");
+      const tocDrawer = document.getElementById("site-toc");
+      const tocOverlay = document.querySelector<HTMLElement>("[data-toc-overlay]");
+      if (tocToggle && tocDrawer) {
+        const setOpen = (open: boolean) => {
+          document.body.classList.toggle("toc-open", open);
+          tocToggle.setAttribute("aria-expanded", String(open));
+          tocToggle.setAttribute("aria-label", open ? "目次を閉じる" : "目次を開く");
+          if (open) tocDrawer.querySelector<HTMLAnchorElement>("a")?.focus();
+          else tocToggle.focus();
+        };
+        tocToggle.addEventListener("click", () =>
+          setOpen(!document.body.classList.contains("toc-open")),
+        );
+        tocOverlay?.addEventListener("click", () => setOpen(false));
+        tocDrawer.addEventListener("click", (e) => {
+          if ((e.target as HTMLElement).closest("a")) setOpen(false);
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && document.body.classList.contains("toc-open")) setOpen(false);
+        });
       }
     </script>
   </body>

@@ -12,12 +12,13 @@ npm run test:dist  # build 後の dist/ HTML 検査
 
 ## 著作権の原則（必須）
 
-元サイトの本文・AA・図の**転載は一切しない**。章構成・教える順序のみ参考。キャラクターは `Avatar.astro` のオリジナル簡易SVG（おにぎり型/黒スーツ）。クレジットはフッタ（Layout.astro）に常設。
+元サイトの本文・AA・図の**転載は一切しない**。章構成・教える順序のみ参考。キャラクターは `Avatar.astro` のオリジナル簡易SVG＝本家の「顔の象徴」だけを自前ベクターで再構成（やる夫=丸顔＋山型の目＋ωの口 ^ω^／やらない夫=角顔＋黒スーツ＋ジト目＋への字。**AAは転載しない**）。クレジットはフッタ（Layout.astro）に常設。2023年に一時消えた本家が復活したため、出典リンクは魚拓ではなくライブURL（`www.ic.is.tohoku.ac.jp/~swk/lecture/yaruodsp/main.html`）を指す（`disttest.ts` が文字列 `ic.is.tohoku.ac.jp` を検査）。
 
 ## アーキテクチャ
 
 - `src/content/chapters/*.mdx` — 全19章。`order` でソート（0=前置き、1〜16=本編、90/91=付録）
-- `src/pages/[slug].astro` — `<Content components={{ Y, N, Demo, Note, KeyPoint }} />` で注入するため**章MDXにimport文は書かない**
+- `src/pages/[slug].astro` — `<Content components={{ Y, N, Demo, Note, KeyPoint }} />` で注入するため**章MDXにimport文は書かない**。`sidebar`/`crumb` を `Layout` に渡す
+- `src/components/Layout.astro` + `src/components/Sidebar.astro` — 章ページは `.page-shell`（grid: 260px サイド目次 + 本文）。`sidebar` prop 真のときだけ `Sidebar`＋ヘッダのハンバーガー＋暗幕を出す（indexは目次そのものなので非表示）。サイド目次の**現在章の節リンクとスクロール追従はLayoutのインラインscriptがクライアントで生成**（MDXがh2/h3にidを自動付与するのを利用、rehype-slug不要）。ヘッダは sticky、モバイル≤960pxはドロワー化（`body.toc-open`）
 - `src/lib/dsp.ts` — 数値計算（DOM非依存・純TS）。FFT/窓/たたみこみ/freqz/部分和
 - `src/demos/` — `manifest.ts`（純データ台帳）+ `index.ts`（遅延ローダ）+ `chNN/*.ts`（DemoDef）+ `runtime.ts`（マウント/rAF/コントロール生成）+ `plot.ts`（オシロ風描画ヘルパ）
 - デザイン: 「和紙の教科書×計測器」。地は紙色、デモパネルだけダーク+蛍光トレース。`globals.css` にトークン集約

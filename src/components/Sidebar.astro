@@ -1,0 +1,48 @@
+---
+import { getCollection } from "astro:content";
+
+interface Props {
+  slug?: string;
+}
+
+const { slug } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const chapters = (await getCollection("chapters")).sort((a, b) => a.data.order - b.data.order);
+
+// order: 0=前置き / 1〜89=本編 / 90+=付録
+const groups = [
+  { label: null as string | null, items: chapters.filter((c) => c.data.order === 0) },
+  { label: "本編", items: chapters.filter((c) => c.data.order > 0 && c.data.order < 90) },
+  { label: "付録", items: chapters.filter((c) => c.data.order >= 90) },
+].filter((g) => g.items.length > 0);
+---
+
+<aside class="toc" id="site-toc" aria-label="目次">
+  <a class="toc-home" href={`${base}/`}>◂ 目次トップ</a>
+  {
+    groups.map((group) => (
+      <div class="toc-group">
+        {group.label && <p class="toc-group-label">{group.label}</p>}
+        <ul class="toc-list">
+          {group.items.map((c) => {
+            const current = c.id === slug;
+            return (
+              <li>
+                <a
+                  class="toc-link"
+                  href={`${base}/${c.id}/`}
+                  aria-current={current ? "page" : undefined}
+                >
+                  <span class="toc-link-label">{c.data.chapterLabel}</span>
+                  <span class="toc-link-title">{c.data.title}</span>
+                </a>
+                {current && <ol class="toc-sections" data-toc-sections />}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ))
+  }
+</aside>

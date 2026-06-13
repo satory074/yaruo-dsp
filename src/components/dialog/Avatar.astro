@@ -1,6 +1,8 @@
 ---
-// オリジナル描き起こしの簡易ベクターキャラクター（AAの転載はしない）。
-// やる夫 = おにぎり型・クリーム色、やらない夫 = 黒スーツ・角顔。
+// オリジナル描き起こしの簡易ベクターキャラクター（2ch の AA は転載しない）。
+// 本家へのリスペクトとして「顔の象徴」だけを自前ジオメトリで再構成:
+//   やる夫    = 丸顔・山型の目（∧∧）・ω の口  → ( ^ω^ )
+//   やらない夫 = 角顔＋黒スーツ・ジト目・への字の口 → ( ´_ゝ` )
 export type Mood = "normal" | "smile" | "surprised" | "cry" | "angry" | "smug" | "think";
 
 interface Props {
@@ -15,130 +17,143 @@ const { character, mood = "normal", size = 52 } = Astro.props;
 {
   character === "yaruo" ? (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
-      {/* おにぎり型の輪郭 */}
-      <path
-        d="M32 5 C 24 5, 9 38, 9 48 C 9 56 19 59 32 59 C 45 59 55 56 55 48 C 55 38 40 5 32 5 Z"
-        fill="#f9f0d0"
-        stroke="#c9b56b"
-        stroke-width="2.5"
-      />
+      {/* 丸顔の輪郭（おにぎりではなく真円が やる夫 らしさの核） */}
+      <circle cx="32" cy="33" r="25" fill="#f9f0d0" stroke="#c9b56b" stroke-width="2.5" />
       {mood === "normal" && (
-        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
-          <path d="M18 36 q 5 -5 10 0" />
-          <path d="M36 36 q 5 -5 10 0" />
-          <path d="M28 47 h 8" />
+        <g stroke="#3a342c" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 31 l6 -7 l6 7" />
+          <path d="M35 31 l6 -7 l6 7" />
+          <path d="M21 43 q5.5 6 11 -1 q5.5 6 11 1" />
         </g>
       )}
       {mood === "smile" && (
-        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
-          <path d="M18 36 q 5 -5 10 0" />
-          <path d="M36 36 q 5 -5 10 0" />
-          <path d="M25 45 q 7 6 14 0" />
+        <g stroke="#3a342c" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 29 q6 -6 12 0" />
+          <path d="M35 29 q6 -6 12 0" />
+          <path d="M22 41 q10 11 20 0" />
         </g>
       )}
       {mood === "surprised" && (
         <g>
-          <circle cx="23" cy="35" r="4.2" fill="none" stroke="#3a342c" stroke-width="2.4" />
-          <circle cx="41" cy="35" r="4.2" fill="none" stroke="#3a342c" stroke-width="2.4" />
-          <ellipse cx="32" cy="48" rx="4" ry="5" fill="#3a342c" />
+          <circle cx="24" cy="30" r="4" fill="none" stroke="#3a342c" stroke-width="2.6" />
+          <circle cx="40" cy="30" r="4" fill="none" stroke="#3a342c" stroke-width="2.6" />
+          <circle cx="32" cy="45" r="3.4" fill="#3a342c" />
         </g>
       )}
       {mood === "cry" && (
-        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
-          <path d="M18 34 q 5 5 10 0" />
-          <path d="M36 34 q 5 5 10 0" />
-          <path d="M25 48 q 3.5 -3 7 0 q 3.5 3 7 0" />
-          <path d="M20 40 q -1.5 5 0 8" stroke="#58a8d8" stroke-width="3" />
+        <g stroke="#3a342c" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 26 l6 6 l6 -6" />
+          <path d="M35 26 l6 6 l6 -6" />
+          <path d="M24 47 q8 -6 16 0" />
+          <path d="M19 33 q-2 6 0 10" stroke="#58a8d8" stroke-width="3" />
+          <path d="M45 33 q2 6 0 10" stroke="#58a8d8" stroke-width="3" />
         </g>
       )}
       {mood === "angry" && (
-        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
-          <path d="M18 32 l 10 4" />
-          <path d="M46 32 l -10 4" />
-          <path d="M25 49 q 7 -5 14 0" />
+        <g stroke="#3a342c" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 27 l9 4" />
+          <path d="M46 27 l-9 4" />
+          <path d="M25 46 q7 -5 14 0" />
+          <g stroke="#bf4127" stroke-width="1.7">
+            <path d="M47 13 l3 3 M50 13 l-3 3" />
+            <path d="M52 9 l2 2 M54 9 l-2 2" />
+          </g>
         </g>
       )}
       {mood === "smug" && (
-        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
-          <path d="M18 36 h 10" />
-          <path d="M36 36 h 10" />
-          <path d="M27 46 q 6 4 11 -1" />
+        <g stroke="#3a342c" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 30 q6 -2 12 0" />
+          <path d="M35 30 q6 -2 12 0" />
+          <path d="M24 43 q7 5 15 -2" />
         </g>
       )}
       {mood === "think" && (
-        <g stroke="#3a342c" stroke-width="2.4" fill="none" stroke-linecap="round">
-          <path d="M18 36 q 5 -5 10 0" />
-          <path d="M36 36 q 5 -5 10 0" />
-          <path d="M28 47 h 8" />
+        <g>
+          <g stroke="#3a342c" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 31 l6 -7 l6 7" />
+            <path d="M35 31 l6 -7 l6 7" />
+            <path d="M21 43 q5.5 6 11 -1 q5.5 6 11 1" />
+          </g>
           <g fill="#8a8273" stroke="none">
-            <circle cx="50" cy="18" r="1.6" />
-            <circle cx="55" cy="14" r="2" />
-            <circle cx="60" cy="9" r="2.4" />
+            <circle cx="52" cy="16" r="1.6" />
+            <circle cx="57" cy="11" r="2" />
+            <circle cx="61" cy="6" r="2.4" />
           </g>
         </g>
       )}
     </svg>
   ) : (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
-      {/* 黒スーツの肩 */}
+      {/* 黒スーツの肩（常識人の対比。やる夫の素頭と対照） */}
       <path d="M8 64 C 10 50 22 46 32 46 C 42 46 54 50 56 64 Z" fill="#23252a" />
       <path d="M27 47 L 32 56 L 37 47 Z" fill="#f5f2ea" />
-      {/* 角ばった顔 */}
-      <rect x="19" y="6" width="26" height="38" rx="7" fill="#f3e2c8" stroke="#b09a76" stroke-width="2.2" />
-      {/* 髪 */}
-      <path d="M19 18 C 19 8 26 5 32 5 C 38 5 45 8 45 18 L 45 14 C 45 9 39 6.5 32 6.5 C 25 6.5 19 9 19 14 Z" fill="#36302a" />
-      <path d="M19 17 C 20 9 26 6 32 6 C 38 6 44 9 45 17 C 41 13 37 12 32 12 C 27 12 23 13 19 17 Z" fill="#36302a" />
+      {/* 顎へ細る角顔 */}
+      <path
+        d="M20 13 Q20 6 27 6 L37 6 Q44 6 44 13 L44 33 Q44 44 32 45.5 Q20 44 20 33 Z"
+        fill="#f3e2c8"
+        stroke="#b09a76"
+        stroke-width="2.2"
+      />
+      {/* 流し前髪 */}
+      <path d="M18 19 Q18 5 32 5 Q47 5 47 19 Q43 12.5 36 12 Q34 16.5 30 17 Q24 14.5 18 19 Z" fill="#36302a" />
+      {/* 鼻（やる夫の素顔に対し、輪郭のある顔立ち） */}
+      <path d="M31 31 l-1.4 4 h3.2" fill="none" stroke="#c8b48f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
       {mood === "normal" && (
-        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
-          <path d="M24 27 h 7" />
-          <path d="M33 27 h 7" />
-          <path d="M29 37 h 6" />
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 28 q4 1.6 8 0" />
+          <path d="M33 28 q4 1.6 8 0" />
+          <path d="M27 39 q5 2 10 0" />
         </g>
       )}
       {mood === "smile" && (
-        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
-          <path d="M24 28 q 3.5 -3.5 7 0" />
-          <path d="M33 28 q 3.5 -3.5 7 0" />
-          <path d="M27 36 q 5 4 10 0" />
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 28 q4 -2 8 0" />
+          <path d="M33 28 q4 -2 8 0" />
+          <path d="M27 38 q5 -2.5 10 0" />
         </g>
       )}
       {mood === "surprised" && (
         <g>
-          <circle cx="27" cy="27" r="3.4" fill="none" stroke="#33302a" stroke-width="2.2" />
-          <circle cx="37" cy="27" r="3.4" fill="none" stroke="#33302a" stroke-width="2.2" />
-          <ellipse cx="32" cy="37" rx="3.2" ry="4" fill="#33302a" />
+          <circle cx="27" cy="28" r="3" fill="none" stroke="#33302a" stroke-width="2.2" />
+          <circle cx="37" cy="28" r="3" fill="none" stroke="#33302a" stroke-width="2.2" />
+          <ellipse cx="32" cy="39.5" rx="2.6" ry="3.2" fill="#33302a" />
         </g>
       )}
       {mood === "cry" && (
-        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
-          <path d="M24 26 q 3.5 3.5 7 0" />
-          <path d="M33 26 q 3.5 3.5 7 0" />
-          <path d="M28 38 q 4 -2.5 8 0" />
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 27 q4 3 8 0" />
+          <path d="M33 27 q4 3 8 0" />
+          <path d="M27 41 q5 -3 10 0" />
+          <path d="M24 31 q-1 1 -1.5 2.5" stroke="#58a8d8" stroke-width="2" />
         </g>
       )}
       {mood === "angry" && (
-        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
-          <path d="M24 25 l 7 3" />
-          <path d="M40 25 l -7 3" />
-          <path d="M28 38 q 4 -3 8 0" />
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 25 l8 3" />
+          <path d="M41 25 l-8 3" />
+          <path d="M24 30 q3.5 1.4 7 0" />
+          <path d="M33 30 q3.5 1.4 7 0" />
+          <path d="M28 40 q4 1.6 8 0" />
         </g>
       )}
       {mood === "smug" && (
-        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
-          <path d="M24 27 h 7" />
-          <path d="M33 27 h 7" />
-          <path d="M28 36 q 5 3.5 9 -0.5" />
+        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 25 q4 -1.5 8 0" />
+          <path d="M33 28 q4 1.4 8 0" />
+          <path d="M27 39 q6 2.5 11 -1.5" />
         </g>
       )}
       {mood === "think" && (
-        <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round">
-          <path d="M24 27 h 7" />
-          <path d="M33 27 h 7" />
-          <path d="M29 37 h 6" />
+        <g>
+          <g stroke="#33302a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 28 q4 1.6 8 0" />
+            <path d="M33 28 q4 1.6 8 0" />
+            <path d="M27 39 q5 2 10 0" />
+          </g>
           <g fill="#8a8273" stroke="none">
-            <circle cx="50" cy="14" r="1.6" />
-            <circle cx="55" cy="10" r="2" />
-            <circle cx="60" cy="6" r="2.4" />
+            <circle cx="52" cy="14" r="1.6" />
+            <circle cx="57" cy="10" r="2" />
+            <circle cx="61" cy="6" r="2.4" />
           </g>
         </g>
       )}
