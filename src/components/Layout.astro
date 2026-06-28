@@ -97,11 +97,18 @@ const ogImage = new URL(`${base}/og.png`, Astro.site).href;
           <a href="https://github.com/satory074/yaruo-dsp/issues" rel="external noopener">GitHub Issues</a>
           まで。
         </p>
-        <p>
-          <a href="https://satory074.com/apps/" target="_blank" rel="noopener">アプリ一覧へ</a>
-        </p>
       </div>
     </footer>
+
+    <nav class="app-backlink-bar" aria-label="サイト間ナビゲーション">
+      <a
+        href="https://satory074.com/apps/"
+        target="_blank"
+        rel="noopener"
+        aria-label="satory074 のほかのアプリ一覧を新しいタブで開く"
+        >satory074 のほかのアプリ <span aria-hidden="true">↗</span></a
+      >
+    </nav>
 
     <script>
       import { bootDemos } from "../demos/runtime";

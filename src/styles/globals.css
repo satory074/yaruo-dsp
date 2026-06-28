@@ -983,3 +983,37 @@ code {
   max-width: 1140px;
   margin: 0 auto;
 }
+
+/* サイト間ナビ: 画面下端に常駐する控えめな逆リンクバー（→ satory074.com/apps）。
+   小さく・静か・本文を隠さない（body 側に高さ分の padding を予約）。 */
+.app-backlink-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 6px 12px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid var(--color-rule);
+  font-size: 0.8rem;
+}
+.app-backlink-bar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  transition: color 0.12s ease;
+}
+.app-backlink-bar a:hover {
+  color: var(--color-indigo);
+}
+body {
+  padding-bottom: calc(48px + env(safe-area-inset-bottom));
+}
