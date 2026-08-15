@@ -1007,6 +1007,9 @@ code {
   display: inline-flex;
   align-items: center;
   gap: 0.3em;
+  /* ヒット領域を WCAG 2.5.8 の 24px 以上に拡大（負マージンで見た目の高さは不変） */
+  padding: 8px 14px;
+  margin: -8px 0;
   color: var(--color-ink-soft);
   text-decoration: none;
   transition: color 0.12s ease;
@@ -1016,4 +1019,8 @@ code {
 }
 body {
   padding-bottom: calc(48px + env(safe-area-inset-bottom));
+}
+/* ページ内アンカー遷移時に固定バーが飛び先を隠さないように */
+html {
+  scroll-padding-bottom: calc(48px + env(safe-area-inset-bottom));
 }
