@@ -90,6 +90,11 @@ function linkHref(html, rel) {
     return null;
 }
 
+function headOf(html) {
+    const end = html.search(/<\/head>/i);
+    return end === -1 ? html : html.slice(0, end);
+}
+
 function visibleText(html) {
     return decode(
         html
@@ -148,7 +153,8 @@ for (const file of walk(outDir)) {
         rel,
         url: urlOf(file),
         html,
-        titles: [...html.matchAll(/<title\b[^>]*>([\s\S]*?)<\/title>/gi)].map((m) => decode(m[1]).trim()),
+        // <head> の中だけを見る (本文の SVG にある <title> は図の説明で、ページのタイトルではない)
+        titles: [...headOf(html).matchAll(/<title\b[^>]*>([\s\S]*?)<\/title>/gi)].map((m) => decode(m[1]).trim()),
         description: metaContent(html, "name", "description"),
         canonical: linkHref(html, "canonical"),
         ogUrl: metaContent(html, "property", "og:url"),
