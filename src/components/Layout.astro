@@ -2,6 +2,7 @@
 import "../styles/globals.css";
 import "katex/dist/katex.min.css";
 import Sidebar from "./Sidebar.astro";
+import { SITE_NAME, absoluteUrl, jsonLdString } from "../lib/seo";
 
 interface Props {
   title: string;
@@ -9,13 +10,20 @@ interface Props {
   slug?: string; // 章ページのみ。読了記録に使う
   sidebar?: boolean; // 横の目次（サイドTOC）を出すか。章ページのみ true
   crumb?: string; // ヘッダのパンくず（章ラベルなど）
+  ogType?: "website" | "article"; // トップは website、章は article
+  jsonLd?: Record<string, unknown>; // ページごとの構造化データ（1 ページ 1 つ）
+  noindex?: boolean; // 404 用。canonical・og:url・JSON-LD を出さず、検索に出さない
 }
 
-const { title, description, slug, sidebar = false, crumb } = Astro.props;
+const { title, description, slug, sidebar = false, crumb, ogType = "article", jsonLd, noindex = false } =
+  Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const siteTitle = "やる夫で学ぶディジタル信号処理";
+const siteTitle = SITE_NAME;
 const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
 const ogImage = new URL(`${base}/og.png`, Astro.site).href;
+// canonical = og:url = このページ自身の絶対 URL（末尾 /）。trailingSlash: "ignore" なので / 無しでも
+// 開けてしまうが、検索エンジンには / 付きの 1 つだけを伝える
+const canonical = absoluteUrl(Astro.url.pathname);
 ---
 
 <!doctype html>
@@ -26,9 +34,15 @@ const ogImage = new URL(`${base}/og.png`, Astro.site).href;
     <meta name="color-scheme" content="only light" />
     <meta name="darkreader-lock" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <link rel="sitemap" href={`${base}/sitemap-index.xml`} />
+    <meta property="og:site_name" content={siteTitle} />
+    <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content={ogType} />
+    {!noindex && <meta property="og:url" content={canonical} />}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -42,6 +56,7 @@ const ogImage = new URL(`${base}/og.png`, Astro.site).href;
       href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@400;600&family=Shippori+Mincho+B1:wght@700;800&display=swap"
     />
     <title>{fullTitle}</title>
+    {!noindex && jsonLd && <script is:inline type="application/ld+json" set:html={jsonLdString(jsonLd)} />}
   </head>
   <body>
     <header class="site-header">

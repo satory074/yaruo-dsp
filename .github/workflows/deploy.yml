@@ -29,6 +29,8 @@ jobs:
         env:
           GH_USER: ${{ github.repository_owner }}
       - run: npm run test:dist
+      # 検索エンジン向けの不変条件（canonical・サイトマップ・JSON-LD・戻りリンクのバー）。破ったら deploy しない
+      - run: node scripts/seo-check.mjs dist https://satory074.github.io/yaruo-dsp/ --require-backlink
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist

@@ -11,6 +11,7 @@ import KeyEq from "../components/content/KeyEq.astro";
 import Caution from "../components/content/Caution.astro";
 import Def from "../components/content/Def.astro";
 import Hl from "../components/content/Hl.astro";
+import { AUTHOR, HOME_URL, SITE_NAME, WEBSITE_ID, absoluteUrl } from "../lib/seo";
 
 export async function getStaticPaths() {
   const chapters = (await getCollection("chapters")).sort((a, b) => a.data.order - b.data.order);
@@ -23,9 +24,30 @@ export async function getStaticPaths() {
 const { entry, prev, next } = Astro.props;
 const { Content } = await render(entry);
 const { title, chapterLabel, summary, goals } = entry.data;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// 章は教材の 1 単元なので LearningResource。画面の「この章のねらい」をそのまま teaches に入れる
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  name: `${chapterLabel} ${title}`,
+  description: summary,
+  url: absoluteUrl(`${base}/${entry.id}/`),
+  inLanguage: "ja",
+  ...(goals.length > 0 ? { teaches: goals } : {}),
+  isPartOf: { "@type": "WebSite", "@id": WEBSITE_ID, name: SITE_NAME, url: HOME_URL },
+  author: AUTHOR,
+};
 ---
 
-<Layout title={`${chapterLabel} ${title}`} description={summary} slug={entry.id} sidebar crumb={chapterLabel}>
+<Layout
+  title={`${chapterLabel} ${title}`}
+  description={summary}
+  slug={entry.id}
+  sidebar
+  crumb={chapterLabel}
+  jsonLd={jsonLd}
+>
   <article class="prose-dsp">
     <header class="mb-10">
       <p class="font-mono text-sm tracking-[0.18em] text-(--color-vermilion)">{chapterLabel}</p>
