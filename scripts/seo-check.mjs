@@ -280,7 +280,13 @@ for (const p of pages) {
         } catch {
             continue;
         }
-        if (u.origin !== baseUrl.origin || !u.pathname.startsWith(baseUrl.pathname)) continue;
+        if (u.origin !== baseUrl.origin) continue;
+        // 公開 URL のトップを末尾 / 無しで指すリンク (例: /uranai) も 301 になるので捕まえる
+        if (u.pathname + "/" === baseUrl.pathname) {
+            brokenLinks.set(`${p.rel}: 末尾 / が無いリンク (301 になる): ${href}`, true);
+            continue;
+        }
+        if (!u.pathname.startsWith(baseUrl.pathname)) continue;
         const f = fileOf(u.origin + u.pathname);
         if (f === null || f === "redirect") {
             const key = `${p.rel}: ${f === "redirect" ? "末尾 / が無いリンク (301 になる)" : "リンク先が無い"}: ${href}`;
