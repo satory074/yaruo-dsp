@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 
@@ -14,7 +15,8 @@ export default defineConfig({
   site: `https://${ghUser}.github.io`,
   base: `/${repoName}`,
   trailingSlash: "ignore",
-  integrations: [mdx()],
+  // sitemap: dist/sitemap-index.xml + sitemap-0.xml。404 ページは自動で除外される
+  integrations: [mdx(), sitemap()],
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [[rehypeKatex, { strict: false }]],

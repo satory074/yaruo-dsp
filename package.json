@@ -16,6 +16,7 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/mdx": "^4.3.14",
+    "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.0.0",
     "astro": "^5.18.2",
     "katex": "^0.17.0",

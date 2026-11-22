@@ -3,6 +3,22 @@ import { getCollection } from "astro:content";
 import Layout from "../components/Layout.astro";
 import ChapterCard from "../components/ChapterCard.astro";
 import Avatar from "../components/dialog/Avatar.astro";
+import { AUTHOR, HOME_URL, SITE_NAME, WEBSITE_ID } from "../lib/seo";
+
+const description =
+  "フーリエ級数からディジタルフィルタ設計まで、やる夫とやらない夫の対話とインタラクティブなデモで学ぶディジタル信号処理の入門教材。";
+
+// トップは WebSite。各章の LearningResource が isPartOf でこの @id を指す
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": WEBSITE_ID,
+  name: SITE_NAME,
+  url: HOME_URL,
+  description,
+  inLanguage: "ja",
+  author: AUTHOR,
+};
 
 const chapters = (await getCollection("chapters")).sort((a, b) => a.data.order - b.data.order);
 const main = chapters.filter((c) => c.data.order < 90);
@@ -10,10 +26,7 @@ const appendix = chapters.filter((c) => c.data.order >= 90);
 const demoTotal = chapters.reduce((acc, c) => acc + c.data.demos.length, 0);
 ---
 
-<Layout
-  title="やる夫で学ぶディジタル信号処理"
-  description="フーリエ級数からディジタルフィルタ設計まで、やる夫とやらない夫の対話とインタラクティブなデモで学ぶディジタル信号処理の入門教材。"
->
+<Layout title={SITE_NAME} description={description} ogType="website" jsonLd={jsonLd}>
   <section class="hero">
     <div class="flex items-end gap-4">
       <div class="flex -space-x-1">

@@ -66,4 +66,12 @@ DemoDef の規約:
 - 強制ダークモード（Dark Reader 等）対策で `color-scheme: only light` + `<meta name="darkreader-lock">` 済み。地の色は紙色が正
 - KaTeX CSS は Layout.astro で import（フォントは Vite が dist へ自動コピー、CDN不使用）
 - スライダーの `step: 2` で奇数刻みにする場合 `min` も奇数に
-- CI: push で test → build → test:dist → Pages デプロイ（.github/workflows/deploy.yml）
+- CI: main への push で test → build → test:dist → seo-check → Pages デプロイ（.github/workflows/deploy.yml）。ブランチの push では deploy しない
+
+## 検索エンジン向け（SEO）
+
+- `src/lib/seo.ts` — サイト名・トップの絶対 URL・作者（`https://satory074.com/#person`。satory074.com 側で Person を定義）・JSON-LD の文字列化。`Layout.astro` が全ページに canonical = og:url（`absoluteUrl(Astro.url.pathname)`、末尾 / にそろえる）・og:site_name・og:locale を出す
+- JSON-LD は 1 ページ 1 つ。トップ（`index.astro`）は `WebSite`（`@id` = `<トップ>#website`）、章（`[slug].astro`）は `LearningResource`（name = 章ラベル＋題、description = frontmatter `summary`、`teaches` = `goals`＝画面の「この章のねらい」、`isPartOf` → トップの WebSite）。**画面に出ていない内容は書かない**
+- 404 は `Layout` の `noindex` で `robots: noindex`、canonical・og:url・JSON-LD なし
+- サイトマップは `@astrojs/sitemap`（3.7.3。Astro 5 と組み合わせて動く版）→ `dist/sitemap-index.xml` + `sitemap-0.xml`。404 は自動で除外
+- `scripts/seo-check.mjs` は basecamp の原本のコピー（**中身を変えない**）。`node scripts/seo-check.mjs dist https://satory074.github.io/yaruo-dsp/ --require-backlink`（build 後）。タイトル・説明文の重複、canonical のずれ、サイトマップと実ページの不一致、JSON-LD の作者、サイト内リンクの末尾 / 漏れ、戻りリンクのバーを検査する。新しい章を足すときは frontmatter の `summary` を他の章と重ねない
